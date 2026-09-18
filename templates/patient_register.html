@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Registration - DigitalHMS</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f5f0;
+        }
+
+        .register-container {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a7f6e;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            margin-top: 30px;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #1a7f6e;
+            color: #1a7f6e;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #444;
+            font-weight: bold;
+        }
+
+        .optional {
+            color: #888;
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #1a7f6e;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Consent */
+
+        .consent {
+            margin-top: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .consent input {
+            width: auto;
+            margin-top: 3px;
+        }
+
+        .consent label {
+            font-weight: normal;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Register Button */
+
+        .register-button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 25px;
+            background: #1a7f6e;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .register-button:hover {
+            background: #146657;
+        }
+
+        /* Login */
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        .login-link a {
+            color: #1a7f6e;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Back */
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #777;
+            text-decoration: none;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 600px) {
+
+            .register-container {
+                width: auto;
+                margin: 20px;
+                padding: 25px;
+            }
+
+            .row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="register-container">
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <h1>Patient Registration</h1>
+
+
+
+
+
+    <h1>Patient Registration</h1>
+
+    <p class="subtitle">
+        Create your DigitalHMS patient account
+    </p>
+
+
+
+    <!-- ================================= -->
+    <!-- 1. PERSONAL DETAILS -->
+    <!-- ================================= -->
+
+    <h2 class="section-title">
+        1. Personal Details
+    </h2>
+
+
+    <!-- Full Name -->
+
+    <div class="form-group">
+
+        <label>
+            Full Name
+        </label>
+
+        <input
+            type="text"
+            name="full_name"
+            placeholder="Enter your full name"
+            required
+        >
+
+    </div>
+
+
+
+    <!-- DOB + Gender -->
+
+    <div class="row">
+
+
+        <div class="form-group">
+
+            <label>
+                Date of Birth
+            </label>
+
+            <input
+                type="date"
+                name="date_of_birth"
+            >
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label>
+                Gender
+            </label>
+
+            <select
+                name="gender"
+                required
+            >
+
+                <option value="">
+                    Select Gender
+                </option>
+
+                <option value="Male">
+                    Male
+                </option>
+
+                <option value="Female">
+                    Female
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Blood Group + Government ID Type -->
+
+    <div class="row">
+
+
+        <!-- Blood Group -->
+
+        <div class="form-group">
+
+            <label>
+                Blood Group
+            </label>
+
+            <select name="blood_group">
+
+                <option value="">
+                    Select Blood Group
+                </option>
+
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- Government ID Type -->
+
+        <div class="form-group">
+
+            <label>
+                Government ID Type
+                <span class="optional">
+                    (Optional)
+                </span>
+            </label>
+
+            <select
+                name="government_id_type"
+                id="government_id_type"
+            >
+
+                <option value="">
+                    Select ID Type
+                </option>
+
+                <option value="Aadhaar">
+                    Aadhaar Card
+                </option>
+
+                <option value="Voter ID">
+                    Voter ID
+                </option>
+
+                <option value="Passport">
+                    Passport
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Government ID Number -->
+
+    <!-- Hidden until Government ID Type is selected -->
+
+    <div
+        class="form-group"
+        id="governmentIdNumberGroup"
+        style="display: none;"
+    >
+
+        <label>
+
+            Government ID Number
+
+            <span class="optional">
+                (Optional)
+            </span>
+
+        </label>
+
+        <input
+            type="text"
+            id="government_id"
+            name="government_id"
+            placeholder="Enter your ID number"
+        >
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- 2. CONTACT INFORMATION -->
+    <!-- ================================= -->
+
+    <h2 class="section-title">
+        2. Contact Information
+    </h2>
+
+
+
+    <!-- Mobile + Email -->
+
+    <div class="row">
+
+
+        <div class="form-group">
+
+            <label>
+                Mobile Number
+            </label>
+
+            <input
+                type="tel"
+                name="mobile"
+                id="mobile"
+                placeholder="Enter 10-digit mobile number"
+                maxlength="10"
+                pattern="[0-9]{10}"
+                required
+            >
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label>
+                Email ID
+            </label>
+
+            <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Enter your email"
+                required
+            >
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Address -->
+
+    <div class="form-group">
+
+        <label>
+            Residential Address
+        </label>
+
+        <textarea
+            name="address"
+            placeholder="House No, Street, City, State, PIN Code"
+        ></textarea>
+
+    </div>
+
+
+
+    <!-- Emergency Contact -->
+
+    <div class="row">
+
+
+        <div class="form-group">
+
+            <label>
+                Emergency Contact Name
+            </label>
+
+            <input
+                type="text"
+                name="emergency_contact_name"
+                placeholder="Relative / Friend name"
+            >
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label>
+                Emergency Contact Number
+            </label>
+
+            <input
+                type="tel"
+                name="emergency_contact_number"
+                placeholder="10-digit mobile number"
+                maxlength="10"
+                pattern="[0-9]{10}"
+            >
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- 3. MEDICAL INFORMATION -->
+    <!-- OPTIONAL -->
+    <!-- ================================= -->
+
+    <h2 class="section-title">
+
+        3. Medical Information
+
+        <span class="optional">
+            (Optional)
+        </span>
+
+    </h2>
+
+
+
+    <!-- Symptoms -->
+
+    <div class="form-group">
+
+        <label>
+
+            Primary Symptoms / Chief Complaint
+
+            <span class="optional">
+                (Optional)
+            </span>
+
+        </label>
+
+        <textarea
+            name="symptoms"
+            placeholder="You can leave this blank and use AI Disease Prediction later."
+        ></textarea>
+
+    </div>
+
+
+
+    <!-- Medical History -->
+
+    <div class="form-group">
+
+        <label>
+
+            Past Medical History
+
+            <span class="optional">
+                (Optional)
+            </span>
+
+        </label>
+
+        <textarea
+            name="medical_history"
+            placeholder="Previous diseases, surgeries, etc."
+        ></textarea>
+
+    </div>
+
+
+
+    <!-- Allergies -->
+
+    <div class="form-group">
+
+        <label>
+
+            Allergies
+
+            <span class="optional">
+                (Optional)
+            </span>
+
+        </label>
+
+        <textarea
+            name="allergies"
+            placeholder="Medicine / food allergies"
+        ></textarea>
+
+    </div>
+
+
+
+    <!-- Current Medications -->
+
+    <div class="form-group">
+
+        <label>
+
+            Current Medications
+
+            <span class="optional">
+                (Optional)
+            </span>
+
+        </label>
+
+        <textarea
+            name="current_medications"
+            placeholder="Currently taking medicines"
+        ></textarea>
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- 4. INSURANCE & BILLING -->
+    <!-- ================================= -->
+
+    <h2 class="section-title">
+        4. Insurance & Billing
+    </h2>
+
+
+
+    <!-- Insurance + Policy -->
+
+    <div class="row">
+
+
+        <div class="form-group">
+
+            <label>
+
+                Health Insurance Company
+
+                <span class="optional">
+                    (Optional)
+                </span>
+
+            </label>
+
+            <input
+                type="text"
+                name="insurance_company"
+                placeholder="Insurance company name"
+            >
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label>
+
+                Policy Number
+
+                <span class="optional">
+                    (Optional)
+                </span>
+
+            </label>
+
+            <input
+                type="text"
+                name="policy_number"
+                placeholder="Policy number"
+            >
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Payment Preference -->
+
+    <div class="form-group">
+
+        <label>
+            Payment Preference
+        </label>
+
+        <select name="payment_preference">
+
+            <option value="">
+                Select Payment Method
+            </option>
+
+            <option value="Cash">
+                Cash
+            </option>
+
+            <option value="Card">
+                Card
+            </option>
+
+            <option value="UPI">
+                UPI
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- 5. ACCOUNT DETAILS -->
+    <!-- ================================= -->
+
+    <h2 class="section-title">
+        5. Account Details
+    </h2>
+
+
+
+    <!-- Username Type -->
+
+    <div class="form-group">
+
+        <label>
+            Username / Patient ID
+        </label>
+
+        <select
+            name="username_type"
+            id="username_type"
+            required
+        >
+
+            <option value="">
+                Select Username Type
+            </option>
+
+            <option value="mobile">
+                Use Mobile Number
+            </option>
+
+            <option value="email">
+                Use Email ID
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <!-- Password -->
+
+    <div class="row">
+
+
+        <div class="form-group">
+
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Create a password"
+                required
+            >
+
+        </div>
+
+
+
+        <div class="form-group">
+
+            <label>
+                Confirm Password
+            </label>
+
+            <input
+                type="password"
+                name="confirm_password"
+                placeholder="Confirm password"
+                required
+            >
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Profile Photo -->
+
+    <div class="form-group">
+
+        <label>
+
+            Profile Photo
+
+            <span class="optional">
+                (Optional)
+            </span>
+
+        </label>
+
+        <input
+            type="file"
+            name="profile_photo"
+            accept="image/*"
+        >
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- DIGITAL CONSENT -->
+    <!-- ================================= -->
+
+    <div class="consent">
+
+        <input
+            type="checkbox"
+            id="consent"
+            name="consent"
+            required
+        >
+
+        <label for="consent">
+
+            I agree that DigitalHMS may securely store
+            and use my information for healthcare services
+            and related system functionality.
+
+        </label>
+
+    </div>
+
+
+
+    <!-- Register Button -->
+
+    <button
+        type="submit"
+        class="register-button"
+    >
+
+        Create Patient Account
+
+    </button>
+
+
+
+    <!-- Login Link -->
+
+    <div class="login-link">
+
+        Already have an account?
+
+        <a href="{% url 'patient_login' %}">
+            Login
+        </a>
+
+    </div>
+
+
+
+    <!-- Home -->
+
+    <a
+        href="{% url 'home' %}"
+        class="back-link"
+    >
+
+        ← Back to Home
+
+    </a>
+
+    </form>
+
+
+</div>
+
+
+
+<!-- ================================= -->
+<!-- JAVASCRIPT -->
+<!-- ================================= -->
+
+<script>
+
+
+    // ==========================================
+    // Government ID Number Show / Hide
+    // ==========================================
+
+    const governmentIdType =
+        document.getElementById("government_id_type");
+
+    const governmentIdNumberGroup =
+        document.getElementById("governmentIdNumberGroup");
+
+    const governmentIdNumber =
+        document.getElementById("government_id");
+
+
+    governmentIdType.addEventListener(
+        "change",
+        function () {
+
+            if (this.value !== "") {
+
+                // Show ID Number field
+                governmentIdNumberGroup.style.display = "block";
+
+            }
+
+            else {
+
+                // Hide ID Number field
+                governmentIdNumberGroup.style.display = "none";
+
+                // Clear previously entered ID
+                governmentIdNumber.value = "";
+
+            }
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

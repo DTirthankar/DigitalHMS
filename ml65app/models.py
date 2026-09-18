@@ -49,6 +49,124 @@ class Hospital(models.Model):
     def __str__(self):
         return self.name
 
+class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('PATIENT', 'Patient'),
+        ('HOSPITAL', 'Hospital'),
+        ('DOCTOR', 'Doctor'),
+        ('HEALTH_WORKER', 'Health Worker'),
+        ('MEDICAL_SHOP', 'Medical Shop'),
+    ]
+
+    user = models.OneToOneField(
+        'auth.User',
+        on_delete=models.CASCADE
+    )
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES
+    )
+
+    def __str__(self):
+        return f"{self.user.username} - {self.role}"
+
+
+# =========================
+# Patient Profile
+# =========================
+
+class PatientProfile(models.Model):
+
+    user = models.OneToOneField(
+        'auth.User',
+        on_delete=models.CASCADE
+    )
+
+    full_name = models.CharField(max_length=150)
+
+    date_of_birth = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    gender = models.CharField(
+        max_length=10
+    )
+
+    blood_group = models.CharField(
+        max_length=5,
+        blank=True
+    )
+
+    government_id_type = models.CharField(
+        max_length=30,
+        blank=True
+    )
+
+    government_id = models.CharField(
+        max_length=100,
+        blank=True
+    )
+
+    mobile = models.CharField(
+        max_length=15
+    )
+
+    email = models.EmailField(blank=True)
+
+    address = models.TextField(
+        blank=True
+    )
+
+    emergency_contact_name = models.CharField(
+        max_length=150,
+        blank=True
+    )
+
+    emergency_contact_number = models.CharField(
+        max_length=15,
+        blank=True
+    )
+
+    # Medical information is optional
+    symptoms = models.TextField(
+        blank=True
+    )
+
+    medical_history = models.TextField(
+        blank=True
+    )
+
+    allergies = models.TextField(
+        blank=True
+    )
+
+    current_medications = models.TextField(
+        blank=True
+    )
+
+    insurance_company = models.CharField(
+        max_length=150,
+        blank=True
+    )
+
+    policy_number = models.CharField(
+        max_length=100,
+        blank=True
+    )
+
+    payment_preference = models.CharField(
+        max_length=20,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(
+        default=timezone.now
+    )
+
+    def __str__(self):
+        return self.full_names
 
 class EmergencyRequest(models.Model):
     STATUS_CHOICES = [

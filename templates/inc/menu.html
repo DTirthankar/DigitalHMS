@@ -1,9 +1,25 @@
 <nav style="background:#1a1a1a; padding:12px 24px; display:flex; align-items:center; gap:32px;">
   <span style="color:white; font-weight:bold; font-size:18px;">Logo</span>
+
   <a href="{% url 'home' %}" style="color:white; text-decoration:none;">Home</a>
+
   <a href="{% url 'about' %}" style="color:white; text-decoration:none;">About Us</a>
+
   <a href="{% url 'predict' %}" style="color:white; text-decoration:none;">Prediction</a>
+
   <a href="{% url 'contact' %}" style="color:white; text-decoration:none;">Contact Us</a>
+
   <a href="{% url 'history' %}" style="color:white; text-decoration:none;">History</a>
+
   <a href="{% url 'dashboard' %}" style="color:white; text-decoration:none;">Dashboard</a>
+
+  <a href="{% url 'patient_login' %}"
+     style="color:white; text-decoration:none; background:#1A7F6E; padding:7px 14px; border-radius:4px;">
+     👤 Patient Login
+  </a>
+
+  <a href="{% url 'members_login' %}"
+     style="color:white; text-decoration:none; background:#2E4057; padding:7px 14px; border-radius:4px;">
+     🏥 Members Login
+  </a>
 </nav>

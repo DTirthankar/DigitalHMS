@@ -1,9 +1,15 @@
 import joblib
 import numpy as np
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import os
 from django.conf import settings
-from .models import PatientPrediction, Hospital, EmergencyRequest
+
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+from django.contrib import messages
+
+from .models import PatientPrediction, Hospital, EmergencyRequest, PatientProfile
+
 from math import radians, cos, sin, asin, sqrt
 from django.db.models import Count
 from django.utils import timezone
@@ -175,6 +181,258 @@ def get_urgency(predicted_disease, confidence):
     elif confidence < 50 and level == 'Moderate':
         level = 'High'
     return level
+
+# Patient Login
+
+def patient_login(request):
+    return render(request, 'patient_login.html')
+
+# Patient Registration
+
+def patient_register(request):
+
+    if request.method == 'POST':
+
+        # Personal Details
+        full_name = request.POST.get('full_name', '').strip()
+        date_of_birth = request.POST.get('date_of_birth') or None
+        gender = request.POST.get('gender', '').strip()
+        blood_group = request.POST.get('blood_group', '').strip()
+
+        # Government ID - Optional
+        government_id_type = request.POST.get(
+            'government_id_type', ''
+        ).strip()
+
+        government_id = request.POST.get(
+            'government_id', ''
+        ).strip()
+
+        # Contact Details
+        mobile = request.POST.get('mobile', '').strip()
+        email = request.POST.get('email', '').strip()
+
+        address = request.POST.get('address', '').strip()
+
+        emergency_contact_name = request.POST.get(
+            'emergency_contact_name', ''
+        ).strip()
+
+        emergency_contact_number = request.POST.get(
+            'emergency_contact_number', ''
+        ).strip()
+
+        # Medical Information - Optional
+        symptoms = request.POST.get(
+            'symptoms', ''
+        ).strip()
+
+        medical_history = request.POST.get(
+            'medical_history', ''
+        ).strip()
+
+        allergies = request.POST.get(
+            'allergies', ''
+        ).strip()
+
+        current_medications = request.POST.get(
+            'current_medications', ''
+        ).strip()
+
+        # Insurance & Billing - Optional
+        insurance_company = request.POST.get(
+            'insurance_company', ''
+        ).strip()
+
+        policy_number = request.POST.get(
+            'policy_number', ''
+        ).strip()
+
+        payment_preference = request.POST.get(
+            'payment_preference', ''
+        ).strip()
+
+        # Account
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get(
+            'confirm_password', ''
+        )
+
+        # Validation
+        
+        if not full_name:
+            messages.error(
+                request,
+                'Full Name is required.'
+            )
+            return render(
+                request,
+                'patient_register.html'
+            )
+
+        if not mobile:
+            messages.error(
+                request,
+                'Mobile Number is required.'
+            )
+            return render(
+                request,
+                'patient_register.html'
+            )
+
+        if not gender:
+            messages.error(
+                request,
+                'Please select your gender.'
+            )
+            return render(
+                request,
+                'patient_register.html'
+            )
+
+        if not password:
+            messages.error(
+                request,
+                'Password is required.'
+            )
+            return render(
+                request,
+                'patient_register.html'
+            )
+
+        if password != confirm_password:
+            messages.error(
+                request,
+                'Passwords do not match.'
+            )
+            return render(
+                request,
+                'patient_register.html'
+            )
+
+        # -------------------------
+        # Government ID
+        # Optional
+        # But duplicate ID not allowed
+        # -------------------------
+
+        if government_id_type and not government_id:
+            messages.error(
+                request,
+                'Please enter your Government ID Number.'
+            )
+            return render(
+                request,
+                'patient_register.html'
+            )
+
+        if government_id and not government_id_type:
+            messages.error(
+                request,
+                'Please select Government ID Type.'
+            )
+            return render(
+                request,
+                'patient_register.html'
+            )
+
+        if government_id_type and government_id:
+
+            already_registered = PatientProfile.objects.filter(
+                government_id_type=government_id_type,
+                government_id=government_id
+            ).exists()
+
+            if already_registered:
+                messages.error(
+                    request,
+                    'This Government ID is already registered.'
+                )
+                return render(
+                    request,
+                    'patient_register.html'
+                )
+
+        # -------------------------
+        # Create unique internal username
+        # -------------------------
+        # Same mobile can be used by
+        # multiple family members.
+
+        username = f"patient_{mobile}"
+
+        counter = 1
+
+        while User.objects.filter(
+            username=username
+        ).exists():
+
+            username = f"patient_{mobile}_{counter}"
+            counter += 1
+
+        # -------------------------
+        # Create User
+        # -------------------------
+
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            email=email
+        )
+
+        # -------------------------
+        # Create Patient Profile
+        # -------------------------
+
+        PatientProfile.objects.create(
+            user=user,
+
+            full_name=full_name,
+            date_of_birth=date_of_birth,
+            gender=gender,
+            blood_group=blood_group,
+
+            government_id_type=government_id_type,
+            government_id=government_id,
+
+            mobile=mobile,
+            email=email,
+
+            address=address,
+
+            emergency_contact_name=emergency_contact_name,
+            emergency_contact_number=emergency_contact_number,
+
+            symptoms=symptoms,
+            medical_history=medical_history,
+            allergies=allergies,
+            current_medications=current_medications,
+
+            insurance_company=insurance_company,
+            policy_number=policy_number,
+            payment_preference=payment_preference
+        )
+
+        messages.success(
+            request,
+            'Patient registration successful! Please login.'
+        )
+
+        return redirect('patient_login')
+
+    return render(
+        request,
+        'patient_register.html'
+    )
+
+# Members Login
+def members_login(request):
+    return render(request, 'members_login.html')
+
+# Members Registration
+
+def members_register(request):
+    return render(request, 'members_register.html')
 
 def home(request):
     return render(request, 'home.html')

@@ -11,4 +11,12 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('history/', views.history, name='history'),
     path('dashboard/', views.dashboard, name='dashboard'),
+
+    # Patient Login/Register
+    path('patient/login/', views.patient_login, name='patient_login'),
+    path('patient/register/', views.patient_register, name='patient_register'),
+
+    # Members Login
+    path('members/login/', views.members_login, name='members_login'),
+    path('members/register/', views.members_register, name='members_register'),
 ]
