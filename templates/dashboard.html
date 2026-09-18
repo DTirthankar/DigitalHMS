@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+{% include 'inc/menu.html' %}
+
+<div class="container mt-4 mb-5">
+    <h2 class="mb-4">Doctor Dashboard</h2>
+
+    <div class="row mt-3">
+        <div class="col-md-3 mb-3">
+            <div class="card p-3 shadow-sm">
+                <h6 class="text-muted">Total Predictions</h6>
+                <h2>{{ total_predictions }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card p-3 shadow-sm">
+                <h6 class="text-muted">Most Common Disease</h6>
+                <h4>{{ top_disease }}</h4>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card p-3 shadow-sm">
+                <h6 class="text-muted">Today's Cases</h6>
+                <h2>{{ today_count }}</h2>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card p-3 shadow-sm border-danger">
+                <h6 class="text-muted">Critical / High Urgency</h6>
+                <h2 class="text-danger">{{ critical_count|add:high_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mt-4">Recent Predictions</h4>
+    <table class="table table-bordered mt-2">
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Disease</th>
+                <th>Confidence</th>
+                <th>Urgency</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in predictions %}
+            <tr>
+                <td>{{ p.patient_name }}</td>
+                <td>{{ p.patient_age }}</td>
+                <td>{{ p.patient_gender }}</td>
+                <td>{{ p.predicted_disease }}</td>
+                <td>{{ p.confidence }}%</td>
+                <td>
+                    <span class="badge
+                        {% if p.urgency == 'Critical' %}bg-danger
+                        {% elif p.urgency == 'High' %}bg-warning text-dark
+                        {% elif p.urgency == 'Moderate' %}bg-primary
+                        {% else %}bg-success
+                        {% endif %}">
+                        {{ p.urgency }}
+                    </span>
+                </td>
+                <td>{{ p.created_at|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center text-muted">No predictions yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

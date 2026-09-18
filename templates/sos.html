@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS Emergency</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f5f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sos-container {
+            max-width: 700px;
+            margin: 80px auto;
+            padding: 40px;
+            text-align: center;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .sos-icon {
+            font-size: 70px;
+        }
+
+        h1 {
+            color: #c62828;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .sos-button {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 16px 40px;
+            background: #c62828;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .sos-button:hover {
+            background: #a91f1f;
+        }
+
+        .sos-button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 20px;
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color: #1a7f6e;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sos-container">
+
+        <div class="sos-icon">🚨</div>
+
+        <h1>SOS Emergency</h1>
+
+        <p>
+            Emergency assistance is available without login.
+        </p>
+
+        <p>
+            Press the button to request immediate medical assistance.
+        </p>
+
+        <!-- SOS activation button -->
+        <button id="sosButton" class="sos-button" onclick="activateSOS()">
+            🚨 ACTIVATE SOS
+        </button>
+
+        <!-- Emergency processing status -->
+        <div id="status" class="status"></div>
+
+        <br>
+
+        <a href="{% url 'home' %}" class="back-button">
+            ← Back to Home
+        </a>
+
+    </div>
+
+
+    <script>
+
+        // Activate SOS emergency request
+        function activateSOS() {
+
+            const button = document.getElementById("sosButton");
+            const status = document.getElementById("status");
+
+            // Disable button to prevent multiple SOS requests
+            button.disabled = true;
+
+            status.innerText = "🚨 Activating emergency assistance...";
+
+            // Check whether browser supports location services
+            if (!navigator.geolocation) {
+                status.innerText = "Location service is not supported by this browser.";
+                button.disabled = false;
+                return;
+            }
+
+            // Automatically get patient's current location
+            navigator.geolocation.getCurrentPosition(
+
+                function(position) {
+
+                    // Get current latitude and longitude
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    status.innerText = "📍 Location detected. Sending emergency request...";
+
+                    // Create a form automatically
+                    const form = document.createElement("form");
+
+                    form.method = "POST";
+                    form.action = "{% url 'sos' %}";
+
+                    // Django CSRF token
+                    const csrfToken = document.createElement("input");
+                    csrfToken.type = "hidden";
+                    csrfToken.name = "csrfmiddlewaretoken";
+                    csrfToken.value = "{{ csrf_token }}";
+
+                    // Latitude
+                    const latInput = document.createElement("input");
+                    latInput.type = "hidden";
+                    latInput.name = "latitude";
+                    latInput.value = latitude;
+
+                    // Longitude
+                    const lonInput = document.createElement("input");
+                    lonInput.type = "hidden";
+                    lonInput.name = "longitude";
+                    lonInput.value = longitude;
+
+                    // Add location data to form
+                    form.appendChild(csrfToken);
+                    form.appendChild(latInput);
+                    form.appendChild(lonInput);
+
+                    // Add form to page
+                    document.body.appendChild(form);
+
+                    // Send emergency request to Django
+                    form.submit();
+                },
+
+                function(error) {
+
+                    // Location permission/error handling
+                    if (error.code === error.PERMISSION_DENIED) {
+                        status.innerText =
+                            "Location permission is required to activate SOS.";
+                    }
+                    else {
+                        status.innerText =
+                            "Unable to detect your location. Please try again.";
+                    }
+
+                    button.disabled = false;
+                },
+
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+
+    </script>
+
+</body>
+</html>

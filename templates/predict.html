@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Predict Disease</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+</head>
+<body>
+
+{% include 'inc/menu.html' %}
+
+<div class="container mt-4 mb-5">
+    <h2 class="mb-4">Chronic Disease Prediction</h2>
+
+    <form method="POST" action="{% url 'predict' %}">
+        {% csrf_token %}
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label class="form-label">Patient Name</label>
+                <input type="text" name="patient_name" class="form-control" placeholder="Enter patient name" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Age</label>
+                <input type="number" name="patient_age" class="form-control" placeholder="Age" min="0" max="120">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Gender</label>
+                <select name="patient_gender" class="form-select">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Symptom 1</label>
+                <select name="symptom1" class="form-select symptom-select" required>
+                    <option value="">-- Select Symptom --</option>
+                    {% for s in symptoms %}
+                        <option value="{{ s }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Symptom 2</label>
+                <select name="symptom2" class="form-select symptom-select">
+                    <option value="">-- Select Symptom --</option>
+                    {% for s in symptoms %}
+                        <option value="{{ s }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Symptom 3</label>
+                <select name="symptom3" class="form-select symptom-select">
+                    <option value="">-- Select Symptom --</option>
+                    {% for s in symptoms %}
+                        <option value="{{ s }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Symptom 4</label>
+                <select name="symptom4" class="form-select symptom-select">
+                    <option value="">-- Select Symptom --</option>
+                    {% for s in symptoms %}
+                        <option value="{{ s }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Symptom 5</label>
+                <select name="symptom5" class="form-select symptom-select">
+                    <option value="">-- Select Symptom --</option>
+                    {% for s in symptoms %}
+                        <option value="{{ s }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Predict</button>
+    </form>
+
+    {% if result %}
+    <div class="card mt-5 p-4 shadow">
+        <h3>Prediction Result for {{ patient_name }}</h3>
+        <h4 class="text-primary">{{ result }} — {{ confidence }}% confidence</h4>
+
+        {% if image_file %}
+            <img src="{% static image_file %}" alt="{{ result }}" class="img-fluid my-3" style="max-width: 300px;">
+        {% else %}
+            <p class="text-muted my-3">No image available for this disease.</p>
+        {% endif %}
+
+        {% if top3 %}
+        <h5>Top 3 Possible Conditions</h5>
+        {% for disease, conf in top3 %}
+        <div class="mb-2">
+            <div class="d-flex justify-content-between">
+                <span>{{ disease }}</span>
+                <span>{{ conf }}%</span>
+            </div>
+            <div class="progress" style="height: 10px;">
+                <div class="progress-bar" role="progressbar" data-width="{{ conf }}" style="width: 0%;"></div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% if nearby_hospitals %}
+        <h5 class="mt-4">Nearby Hospitals for Emergency Care</h5>
+        <div class="row">
+            {% for item in nearby_hospitals %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 p-3 {% if item.relevant %}border-primary{% endif %}">
+                    <h6>{{ item.hospital.name }}</h6>
+                    <p class="mb-1 text-muted small">{{ item.hospital.address }}</p>
+                    <p class="mb-1"><strong>{{ item.distance }} km away</strong></p>
+                    <p class="mb-1">
+                        Beds: {{ item.hospital.available_beds }} / {{ item.hospital.total_beds }} available
+                    </p>
+                    {% if item.hospital.doctor_available %}
+                        {% if item.hospital.total_beds > 0 %}
+                        <p class="mb-1">
+                            Beds: {{ item.hospital.available_beds }} / {{ item.hospital.total_beds }} available
+                        </p>
+                        {% else %}
+                        <p class="mb-1 text-muted">Outpatient clinic — no bed admission</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="mb-1 text-danger">No specialist currently on duty</p>
+                    {% endif %}
+                    <p class="mb-1">Rating: {{ item.hospital.rating }} / 5 ⭐</p>
+                    <p class="mb-0">📞 {{ item.hospital.phone }}</p>
+                    {% if item.hospital.emergency_contact %}
+                        <p class="mb-0 text-danger">🚨 Emergency: {{ item.hospital.emergency_contact }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <a href="{% url 'history' %}" class="btn btn-outline-primary mt-3" style="width: fit-content;">View Prediction History</a>
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.querySelectorAll('.progress-bar').forEach(el => {
+    el.style.width = el.dataset.width + '%';
+});
+
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById('latitude').value = position.coords.latitude;
+        document.getElementById('longitude').value = position.coords.longitude;
+    });
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+    document.querySelectorAll('.symptom-select').forEach(function(el) {
+        new Choices(el, {
+            searchEnabled: true,
+            searchPlaceholderValue: "Type to search symptom...",
+            itemSelectText: '',
+            shouldSort: false,
+            placeholder: true
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+web: gunicorn ml65project.wsgi:application

@@ -1,0 +1,394 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — ChronicML Research Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:     #0D1B2A;
+      --navy-mid: #1B2E42;
+      --slate:    #2E4057;
+      --teal:     #1A7F6E;
+      --teal-lt:  #22A68F;
+      --teal-pale:#E6F4F1;
+      --gold:     #C49A3C;
+      --off-white:#F7F5F0;
+      --warm-gray:#E8E4DC;
+      --text:     #1A1A1A;
+      --text-mid: #4A5568;
+      --text-lt:  #718096;
+      --border:   rgba(0,0,0,0.08);
+      --font-display: 'Lora', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--off-white);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(247, 245, 240, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 18px; font-weight: 600;
+      color: var(--navy); text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--teal); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 14px; font-weight: 400; color: var(--text-mid);
+      text-decoration: none; letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--teal); }
+    .nav-cta {
+      font-size: 13px; font-weight: 500;
+      background: var(--navy); color: #fff;
+      padding: 8px 18px; border-radius: 4px;
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--slate); }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: var(--navy); color: #fff;
+      padding: 80px 2rem 72px;
+      position: relative; overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 50% 100% at 90% 50%, rgba(26,127,110,0.16) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-header-inner { max-width: 1100px; margin: 0 auto; }
+    .breadcrumb {
+      font-size: 12px; color: rgba(255,255,255,0.4);
+      margin-bottom: 20px; letter-spacing: 0.04em;
+    }
+    .breadcrumb a { color: rgba(255,255,255,0.4); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--teal-lt); }
+    .breadcrumb span { margin: 0 8px; }
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 500; line-height: 1.2;
+      letter-spacing: -0.02em; margin-bottom: 16px;
+    }
+    .page-header p {
+      font-size: 16px; color: rgba(255,255,255,0.6);
+      max-width: 560px; line-height: 1.8;
+    }
+
+    /* LAYOUT */
+    .page-body {
+      max-width: 1100px; margin: 0 auto;
+      padding: 72px 2rem;
+      display: grid; grid-template-columns: 1fr 300px; gap: 64px; align-items: start;
+    }
+    section.content-section { margin-bottom: 56px; }
+    .section-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 24px; font-weight: 500;
+      letter-spacing: -0.02em; color: var(--navy);
+      margin-bottom: 18px; line-height: 1.25;
+    }
+    .prose p {
+      font-size: 15px; color: var(--text-mid);
+      line-height: 1.85; margin-bottom: 16px;
+    }
+    .prose p:last-child { margin-bottom: 0; }
+
+    /* OBJECTIVES */
+    .objectives-list { margin-top: 4px; }
+    .obj-item {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+    }
+    .obj-item:last-child { border-bottom: none; }
+    .obj-num {
+      flex-shrink: 0;
+      font-family: var(--font-display);
+      font-size: 13px; font-weight: 600;
+      color: var(--teal); min-width: 24px;
+      padding-top: 1px;
+    }
+    .obj-text {
+      font-size: 15px; color: var(--text-mid); line-height: 1.75;
+    }
+
+    /* TOOLS */
+    .tools-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      margin-top: 4px;
+    }
+    .tool-item {
+      background: #fff;
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 16px 18px;
+      transition: border-color 0.2s;
+    }
+    .tool-item:hover { border-color: var(--teal); }
+    .tool-name {
+      font-size: 14px; font-weight: 500; color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .tool-desc { font-size: 12px; color: var(--text-lt); }
+
+      /* SIDEBAR */
+    .sidebar { position: sticky; top: 88px; }
+    .sidebar-card {
+      background: #fff;
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 22px; margin-bottom: 16px;
+    }
+    .sidebar-card-title {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-lt); margin-bottom: 14px;
+    }
+    .sidebar-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-size: 13px; padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-row:last-child { border-bottom: none; }
+    .sidebar-key { color: var(--text-mid); }
+    .sidebar-val { font-weight: 500; color: var(--navy); text-align: right; max-width: 55%; }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li { padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .sidebar-nav li:last-child { border-bottom: none; }
+    .sidebar-nav a {
+      font-size: 13px; color: var(--text-mid); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+      transition: color 0.2s;
+    }
+    .sidebar-nav a:hover { color: var(--teal); }
+    .sidebar-nav a::before {
+      content: ''; display: block;
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--warm-gray); flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .sidebar-nav a:hover::before { background: var(--teal); }
+
+    /* LIMITATIONS */
+    .limitations-list { margin-top: 4px; }
+    .lim-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+    }
+    .lim-item:last-child { border-bottom: none; }
+    .lim-icon {
+      flex-shrink: 0; width: 20px; height: 20px;
+      background: #FFF8EC; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .lim-icon svg { width: 11px; height: 11px; stroke: var(--gold); fill: none; stroke-width: 2; }
+    .lim-text { font-size: 14px; color: var(--text-mid); line-height: 1.7; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .page-header h1, .page-header p {
+      animation: fadeUp 0.55s ease both;
+    }
+    .page-header p { animation-delay: 0.1s; }
+
+    @media (max-width: 860px) {
+      .page-body { grid-template-columns: 1fr; gap: 40px; }
+      .sidebar { position: static; }
+      .team-grid { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  {% include "inc/menu.html" %}
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="page-header-inner">
+      <div class="breadcrumb">
+        <a href="{% url 'home' %}">Home</a><span>›</span>About
+      </div>
+      <h1>About the research project</h1>
+      <p>An overview of the project background, objectives, team, tools, and the academic context underpinning this machine learning study.</p>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="page-body">
+    <main>
+
+      <!-- PROJECT OVERVIEW -->
+      <section class="content-section" id="overview">
+        <div class="section-label">Overview</div>
+        <h2 class="section-title">Project background</h2>
+        <div class="prose">
+          <p>
+            Chronic and infectious diseases collectively account for a substantial portion of global morbidity and mortality. Early and accurate diagnosis remains a clinical and logistical challenge, particularly in settings with limited access to specialist care or diagnostic infrastructure. This project investigates the application of supervised machine learning classifiers to automate symptom-based disease identification.
+          </p>
+          <p>
+            Using a structured dataset of 4,920 patient records spanning 41 disease categories and 132 binary symptom features, the study evaluates the comparative performance of five widely-used classifiers: Random Forest, Decision Tree, Naïve Bayes, K-Nearest Neighbours, and Support Vector Machine. The goal is to determine which approach offers the most reliable and generalisable detection performance under consistent experimental conditions.
+          </p>
+          <p>
+            This work is intended as a foundational study demonstrating the feasibility of symptom-driven disease classification as a preliminary screening tool. It does not constitute a clinical decision-support system and is presented in an academic context only.
+          </p>
+        </div>
+      </section>
+
+      <!-- OBJECTIVES -->
+      <section class="content-section" id="objectives">
+        <div class="section-label">Aims</div>
+        <h2 class="section-title">Research objectives</h2>
+        <div class="objectives-list">
+          <div class="obj-item">
+            <div class="obj-num">01</div>
+            <div class="obj-text">To preprocess and encode a real-world symptom-disease dataset for use in multi-class supervised classification tasks.</div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-num">02</div>
+            <div class="obj-text">To train and evaluate five standard machine learning classifiers across identical experimental conditions, ensuring reproducibility of results.</div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-num">03</div>
+            <div class="obj-text">To identify the most accurate classifier for this domain through accuracy, precision, recall, F1-score, and confusion matrix analysis.</div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-num">04</div>
+            <div class="obj-text">To analyse feature importance to determine which symptoms carry the greatest discriminative value across disease classes.</div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-num">05</div>
+            <div class="obj-text">To provide a transparent methodology suitable for extension, peer review, and replication in related healthcare ML research.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOLS & TECHNOLOGIES -->
+      <section class="content-section" id="tools">
+        <div class="section-label">Technical stack</div>
+        <h2 class="section-title">Tools &amp; technologies</h2>
+        <div class="tools-grid">
+          <div class="tool-item">
+            <div class="tool-name">Python 3.10</div>
+            <div class="tool-desc">Primary programming language for all data processing and model implementation</div>
+          </div>
+          <div class="tool-item">
+            <div class="tool-name">scikit-learn</div>
+            <div class="tool-desc">Classifier training, cross-validation, and evaluation metrics</div>
+          </div>
+          <div class="tool-item">
+            <div class="tool-name">pandas</div>
+            <div class="tool-desc">Dataset loading, cleaning, and preprocessing pipelines</div>
+          </div>
+          <div class="tool-item">
+            <div class="tool-name">NumPy</div>
+            <div class="tool-desc">Numerical computation and array manipulation</div>
+          </div>
+          <div class="tool-item">
+            <div class="tool-name">Matplotlib / Seaborn</div>
+            <div class="tool-desc">Confusion matrix visualisation and performance chart generation</div>
+          </div>
+          <div class="tool-item">
+            <div class="tool-name">Jupyter Notebook</div>
+            <div class="tool-desc">Interactive development environment for iterative experimentation</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIMITATIONS -->
+      <section class="content-section" id="limitations">
+        <div class="section-label">Scope</div>
+        <h2 class="section-title">Limitations &amp; future work</h2>
+        <div class="prose" style="margin-bottom:20px">
+          <p>This study is subject to several limitations that should be considered when interpreting results or extending this work to applied settings.</p>
+        </div>
+        <div class="limitations-list">
+          <div class="lim-item">
+            <div class="lim-icon"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+            <div class="lim-text"><strong style="font-weight:500;color:var(--navy)">Synthetic balance:</strong> the dataset contains exactly 120 records per class, which does not reflect real-world disease prevalence distributions. Classifier performance on imbalanced clinical data may differ significantly.</div>
+          </div>
+          <div class="lim-item">
+            <div class="lim-icon"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+            <div class="lim-text"><strong style="font-weight:500;color:var(--navy)">Binary symptom encoding:</strong> symptoms are represented as present or absent, discarding symptom severity, duration, and co-occurrence dynamics that may carry clinical significance.</div>
+          </div>
+          <div class="lim-item">
+            <div class="lim-icon"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+            <div class="lim-text"><strong style="font-weight:500;color:var(--navy)">No clinical validation:</strong> the system has not been validated against real patient outcomes or reviewed by clinical professionals. Results should not be applied in any diagnostic context.</div>
+          </div>
+        </div>
+        <div class="prose" style="margin-top:20px">
+          <p>Future directions include integration of continuous biomarker features, deep learning approaches for higher-dimensional input spaces, and prospective validation against de-identified clinical records under appropriate ethical review.</p>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">Project snapshot</div>
+        <div class="sidebar-row"><span class="sidebar-key">Type</span><span class="sidebar-val">Academic research</span></div>
+        <div class="sidebar-row"><span class="sidebar-key">Domain</span><span class="sidebar-val">Healthcare ML</span></div>
+        <div class="sidebar-row"><span class="sidebar-key">Dataset</span><span class="sidebar-val">4,920 records</span></div>
+        <div class="sidebar-row"><span class="sidebar-key">Classes</span><span class="sidebar-val">41 diseases</span></div>
+        <div class="sidebar-row"><span class="sidebar-key">Features</span><span class="sidebar-val">132 symptoms</span></div>
+        <div class="sidebar-row"><span class="sidebar-key">Best model</span><span class="sidebar-val">Random Forest</span></div>
+        <div class="sidebar-row"><span class="sidebar-key">Best accuracy</span><span class="sidebar-val">97.8%</span></div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">On this page</div>
+        <ul class="sidebar-nav">
+          <li><a href="#overview">Project background</a></li>
+          <li><a href="#objectives">Research objectives</a></li>
+          <li><a href="#tools">Tools &amp; technologies</a></li>
+          <li><a href="#limitations">Limitations &amp; future work</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card" style="background:var(--navy);border-color:var(--navy)">
+        <div class="sidebar-card-title" style="color:rgba(255,255,255,0.4)">Explore further</div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:16px">View classifier benchmarks, feature importance rankings, and confusion matrices.</p>
+        <a href="{% url 'home' %}#results" style="display:block;text-align:center;background:var(--teal);color:#fff;font-size:13px;font-weight:500;padding:10px;border-radius:4px;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='#22A68F'" onmouseout="this.style.background='#1A7F6E'">View results →</a>
+      </div>
+    </aside>
+  </div>
+
+  {% include "inc/footer.html" %}
+
+</body>
+</html>

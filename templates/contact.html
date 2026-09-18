@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us — ChronicML</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+
+  {% include 'inc/menu.html' %}
+
+  <div style="display:flex; padding:40px; gap:40px;">
+
+    <!-- LEFT: Address -->
+    <div style="flex:1;">
+      <h2>Contact Us</h2>
+      <br>
+      <h3>Address</h3>
+      <p>Plot No. E2-4, Block-GP Sector-V, Salt Lake City<br>Kolkata-700 091</p>
+      <br>
+      <h3>Phone: 1234567891</h3>
+    </div>
+
+    <!-- RIGHT: Google Map -->
+    <div style="flex:1;">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.0!2d88.4311!3d22.5726!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a0275b200000001%3A0x1!2sSector+V%2C+Salt+Lake+City%2C+Kolkata!5e0!3m2!1sen!2sin!4v1"
+        width="100%"
+        height="400"
+        style="border:0; border-radius:8px;"
+        allowfullscreen=""
+        loading="lazy">
+      </iframe>
+    </div>
+
+  </div>
+
+  {% include 'inc/footer.html' %}
+
+</body>
+</html>

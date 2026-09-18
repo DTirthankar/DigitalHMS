@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Emergency Status</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f5f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 60px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .icon {
+            font-size: 65px;
+        }
+
+        h1 {
+            color: #c62828;
+        }
+
+        .status-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: #fff3f3;
+            border-radius: 10px;
+        }
+
+        .status {
+            font-size: 20px;
+            font-weight: bold;
+            color: #c62828;
+        }
+
+        .info {
+            margin-top: 15px;
+            color: #555;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 25px;
+            background: #1a7f6e;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="icon">🚨</div>
+
+        <h1>Emergency SOS Activated</h1>
+
+        <div class="status-box">
+
+            <div class="status">
+                Emergency Request Sent
+            </div>
+
+            <p class="info">
+                We are finding the nearest available hospital for you.
+            </p>
+
+            <p class="info">
+                Please stay where you are. Emergency assistance is being arranged.
+            </p>
+
+        </div>
+
+        <a href="{% url 'home' %}" class="back-button">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</body>
+</html>
