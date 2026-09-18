@@ -208,27 +208,30 @@ def contact(request):
 
 def predict(request):
     if request.method == 'POST':
+        # 1. Parse patient profile details from form inputs
         patient_name = request.POST.get('patient_name', '')
+        patient_age = request.POST.get('patient_age', '')
+        patient_gender = request.POST.get('patient_gender', 'Other')
         
-        # 1. Safely collect up to 5 symptoms from the dropdowns
+        # 2. Extract selected symptoms from explicit dropdown indexes
         selected_symptoms = []
         for i in range(1, 6):
             s_val = request.POST.get(f'symptom{i}')
             if s_val:
                 selected_symptoms.append(s_val)
-
-        # 2. Build the model's feature vector
+                
+        # 3. Formulate the machine learning input feature matrix
         input_vector = np.zeros(len(SYMPTOMS))
         for symptom in selected_symptoms:
             if symptom in SYMPTOMS:
                 input_vector[SYMPTOMS.index(symptom)] = 1
-
-        # 3. Predict the disease using the model
+                
+        # 4. Execute ML classification inference
         predictions = model.predict([input_vector])
         prediction = predictions[0] if len(predictions) > 0 else "Unknown"
-
-        # 4. Handle probability & confidence scores safely
-        confidence = 90.0  # Fallback default
+        
+        # Calculate confidence metric
+        confidence = 90.0  # Fallback default configuration
         if hasattr(model, "predict_proba"):
             try:
                 probabilities = model.predict_proba([input_vector])
@@ -236,11 +239,12 @@ def predict(request):
             except Exception:
                 pass
 
-        # 5. Determine warning status, image matching, and mock XAI tracking variables
+        # 5. Determine warning status, image matching, and triage priority matrices
         confidence_warning = confidence < 50.0
         image_file = DISEASE_IMAGES.get(prediction, 'images/default.png')
         top3 = [(prediction, confidence)]
         xai_symptoms = [{'symptom': s.replace('_', ' '), 'score': 85} for s in selected_symptoms]
+        urgency = URGENCY_LEVELS.get(prediction, 'Low')
 
         # 6. Fetch user location strings and pass to proximity routing
         user_lat = request.POST.get('latitude', '0.0')
@@ -255,14 +259,22 @@ def predict(request):
         except (ValueError, TypeError):
             nearby_hospitals = []
 
-        # 7. Persist evaluation transaction log inside DB
-        # Change 'symptoms_present' to 'symptoms' (or whatever your model field is named)
+        # 7. Persist evaluation transaction log inside DB (ALIGNED WITH SCHEMA)
         PatientPrediction.objects.create(
+            patient_name=patient_name,
+            patient_age=int(patient_age) if patient_age else None,
+            patient_gender=patient_gender,
+            symptom1=selected_symptoms[0] if len(selected_symptoms) > 0 else '',
+            symptom2=selected_symptoms[1] if len(selected_symptoms) > 1 else '',
+            symptom3=selected_symptoms[2] if len(selected_symptoms) > 2 else '',
+            symptom4=selected_symptoms[3] if len(selected_symptoms) > 3 else '',
+            symptom5=selected_symptoms[4] if len(selected_symptoms) > 4 else '',
             predicted_disease=prediction,
-            symptoms=",".join(selected_symptoms),  
+            confidence=confidence,
+            top3_predictions=str(top3),
+            urgency=urgency,
             created_at=timezone.now()
         )
-
 
         # 8. Complete context mapping payload
         return render(request, 'predict.html', {
@@ -277,7 +289,7 @@ def predict(request):
             'nearby_hospitals': nearby_hospitals,
         })
 
-    # GET request handler
+    # GET request configuration
     return render(request, 'predict.html', {'symptoms': SYMPTOMS})
 
 
