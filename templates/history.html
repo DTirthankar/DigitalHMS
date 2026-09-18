@@ -4,14 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Prediction History</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
 {% include 'inc/menu.html' %}
 
 <div class="container mt-4 mb-5">
+
     <h2 class="mb-4">Prediction History</h2>
 
     <table class="table table-striped">
@@ -26,6 +31,7 @@
                 <th>Date</th>
             </tr>
         </thead>
+
         <tbody>
             {% for record in predictions %}
             <tr>
@@ -34,44 +40,91 @@
                 <td>{{ record.patient_gender }}</td>
                 <td>{{ record.predicted_disease }}</td>
                 <td>{{ record.confidence }}%</td>
+
                 <td>
                     <span class="badge
-                        {% if record.urgency == 'Critical' %}bg-danger
-                        {% elif record.urgency == 'High' %}bg-warning text-dark
-                        {% elif record.urgency == 'Moderate' %}bg-primary
-                        {% else %}bg-success
+                        {% if record.urgency == 'Critical' %}
+                            bg-danger
+                        {% elif record.urgency == 'High' %}
+                            bg-warning text-dark
+                        {% elif record.urgency == 'Moderate' %}
+                            bg-primary
+                        {% else %}
+                            bg-success
                         {% endif %}">
                         {{ record.urgency }}
                     </span>
                 </td>
-                <td>{{ record.created_at|date:"d M Y, h:i A" }}</td>
+
+                <td>
+                    {{ record.created_at|date:"d M Y, h:i A" }}
+                </td>
             </tr>
+
             {% empty %}
-            <tr><td colspan="7" class="text-center text-muted">No predictions yet.</td></tr>
+            <tr>
+                <td colspan="7" class="text-center text-muted">
+                    No predictions yet.
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
 
+
     <h4 class="mt-5">Most Common Diseases Predicted</h4>
+
     <canvas id="diseaseChart" height="100"></canvas>
+
 </div>
 
+
+<!-- Convert Django data to JSON safely -->
+{{ chart_labels|json_script:"chart-labels" }}
+{{ chart_values|json_script:"chart-values" }}
+
+
 <script>
+
+    // Get chart data from Django
+    const labels = JSON.parse(
+        document.getElementById('chart-labels').textContent
+    );
+
+    const values = JSON.parse(
+        document.getElementById('chart-values').textContent
+    );
+
+
+    // Get canvas
     const ctx = document.getElementById('diseaseChart');
+
+
+    // Create Chart
     new Chart(ctx, {
         type: 'bar',
+
         data: {
-            labels: {{ chart_labels|safe }},
+            labels: labels,
+
             datasets: [{
                 label: 'Number of Predictions',
-                data: {{ chart_values|safe }},
+
+                data: values,
+
                 backgroundColor: 'rgba(13, 110, 253, 0.6)'
             }]
         },
-        options: { responsive: true }
+
+        options: {
+            responsive: true
+        }
     });
+
 </script>
 
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
