@@ -256,11 +256,13 @@ def predict(request):
             nearby_hospitals = []
 
         # 7. Persist evaluation transaction log inside DB
+        # Change 'symptoms_present' to 'symptoms' (or whatever your model field is named)
         PatientPrediction.objects.create(
             predicted_disease=prediction,
-            symptoms_present=",".join(selected_symptoms),
+            symptoms=",".join(selected_symptoms),  
             created_at=timezone.now()
         )
+
 
         # 8. Complete context mapping payload
         return render(request, 'predict.html', {
