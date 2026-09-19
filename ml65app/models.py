@@ -51,13 +51,13 @@ class Hospital(models.Model):
 
 class UserProfile(models.Model):
     ROLE_CHOICES = [
-        ('PATIENT', 'Patient'),
-        ('HOSPITAL', 'Hospital'),
-        ('DOCTOR', 'Doctor'),
-        ('HEALTH_WORKER', 'Health Worker'),
-        ('MEDICAL_SHOP', 'Medical Shop'),
-    ]
-
+    ('PATIENT', 'Patient'),
+    ('HOSPITAL', 'Hospital'),
+    ('DOCTOR', 'Doctor'),
+    ('HEALTH_WORKER', 'Health Worker'),
+    ('MEDICAL_SHOP', 'Medical Shop'),
+    ('BLOOD_BANK', 'Blood Bank'),
+]
     user = models.OneToOneField(
         'auth.User',
         on_delete=models.CASCADE
@@ -67,6 +67,8 @@ class UserProfile(models.Model):
         max_length=20,
         choices=ROLE_CHOICES
     )
+
+    mobile = models.CharField(max_length=15, blank=True, default='')
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"

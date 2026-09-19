@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Members Registration - DigitalHMS</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f5f0;
+        }
+
+        .register-container {
+            width: 430px;
+            margin: 60px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2E4057;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            color: #444;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 25px;
+            background: #2E4057;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .register-button:hover {
+            background: #243447;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        .login-link a {
+            color: #2E4057;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            color: #777;
+            text-decoration: none;
+        }
+
+        .message {
+            color: #c62828;
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-container">
+
+        <h1>Members Registration</h1>
+
+        <p class="subtitle">
+            Create your DigitalHMS member account
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="message">
+                    {{ message }}
+                </p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <!-- Member Type -->
+            <label>
+                Member Type
+            </label>
+
+            <select name="member_type" required>
+
+                <option value="">
+                    Select Member Type
+                </option>
+
+                <option value="HOSPITAL">
+                    Hospital
+                </option>
+
+                <option value="DOCTOR">
+                    Doctor
+                </option>
+
+                <option value="HEALTH_WORKER">
+                    Health Worker
+                </option>
+
+                <option value="MEDICAL_SHOP">
+                    Medical Shop
+                </option>
+
+                <option value="BLOOD_BANK">
+                    Blood Bank
+                </option>
+
+            </select>
+
+            <!-- Member / Organization Name -->
+            <label>
+                Member / Organization Name
+            </label>
+
+            <input
+                type="text"
+                name="member_name"
+                placeholder="Enter name"
+                required
+            >
+
+            <!-- Contact Number -->
+            <label>
+                Contact Number
+            </label>
+
+            <input
+                type="tel"
+                name="mobile"
+                placeholder="Enter contact number"
+                maxlength="15"
+                required
+            >
+
+            <!-- Email -->
+            <label>
+                Email ID
+            </label>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter email ID"
+            >
+
+            <!-- Address -->
+            <label>
+                Address
+            </label>
+
+            <textarea
+                name="address"
+                placeholder="Enter address"
+                required
+            ></textarea>
+
+            <!-- Username -->
+            <label>
+                Username
+            </label>
+
+            <input
+                type="text"
+                name="username"
+                placeholder="Create username"
+                required
+            >
+
+            <!-- Password -->
+            <label>
+                Password
+            </label>
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Create password"
+                required
+            >
+
+            <!-- Confirm Password -->
+            <label>
+                Confirm Password
+            </label>
+
+            <input
+                type="password"
+                name="confirm_password"
+                placeholder="Confirm password"
+                required
+            >
+
+            <!-- Consent -->
+            <label style="font-weight:normal; margin-top:18px;">
+
+                <input
+                    type="checkbox"
+                    name="consent"
+                    required
+                    style="width:auto; margin-right:8px;"
+                >
+
+                I agree to provide accurate information and use
+                DigitalHMS responsibly.
+
+            </label>
+
+            <button
+                type="submit"
+                class="register-button"
+            >
+                Create Member Account
+            </button>
+
+        </form>
+
+        <div class="login-link">
+
+            Already have an account?
+
+            <a href="{% url 'members_login' %}">
+                Login
+            </a>
+
+        </div>
+
+        <a
+            href="{% url 'home' %}"
+            class="back-link"
+        >
+            ← Back to Home
+        </a>
+
+    </div>
+
+</body>
+
+</html>

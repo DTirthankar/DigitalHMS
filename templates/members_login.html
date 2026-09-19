@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Patient Login - DigitalHMS</title>
+    <title>Members Login - DigitalHMS</title>
 
     <style>
         body {
@@ -16,7 +16,7 @@
 
         .login-container {
             width: 380px;
-            margin: 100px auto;
+            margin: 80px auto;
             padding: 35px;
             background: white;
             border-radius: 12px;
@@ -25,7 +25,7 @@
         }
 
         h1 {
-            color: #1a7f6e;
+            color: #2E4057;
             margin-bottom: 10px;
         }
 
@@ -34,8 +34,18 @@
             margin-bottom: 25px;
         }
 
-        input[type="text"],
-        input[type="password"] {
+        .member-type {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            background: white;
+        }
+
+        input {
             width: 100%;
             box-sizing: border-box;
             padding: 13px;
@@ -45,36 +55,11 @@
             font-size: 15px;
         }
 
-        .patient-selection {
-            text-align: left;
-            margin-top: 15px;
-            padding: 12px;
-            background: #f5f8f7;
-            border-radius: 6px;
-        }
-
-        .patient-selection-title {
-            font-weight: bold;
-            color: #444;
-            margin-bottom: 10px;
-        }
-
-        .patient-option {
-            display: block;
-            margin: 10px 0;
-            color: #333;
-        }
-
-        .patient-option input {
-            width: auto;
-            margin-right: 8px;
-        }
-
         .login-button {
             width: 100%;
             padding: 13px;
             margin-top: 15px;
-            background: #1a7f6e;
+            background: #2E4057;
             color: white;
             border: none;
             border-radius: 6px;
@@ -84,7 +69,7 @@
         }
 
         .login-button:hover {
-            background: #146657;
+            background: #243447;
         }
 
         .register-link {
@@ -93,7 +78,7 @@
         }
 
         .register-link a {
-            color: #1a7f6e;
+            color: #2E4057;
             text-decoration: none;
             font-weight: bold;
         }
@@ -104,6 +89,12 @@
             color: #777;
             text-decoration: none;
         }
+
+        .message {
+            color: #c62828;
+            margin: 10px 0;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -111,62 +102,46 @@
 
     <div class="login-container">
 
-        <h1>Patient Login</h1>
+        <h1>Members Login</h1>
 
         <p class="subtitle">
-            Login to access your DigitalHMS account
+            Login to your DigitalHMS member account
         </p>
 
         {% if messages %}
             {% for message in messages %}
-                <p style="color:#c62828; margin:10px 0; font-weight:bold;">
+                <p class="message">
                     {{ message }}
                 </p>
             {% endfor %}
         {% endif %}
 
-        <!-- Patient Login Form -->
+
         <form method="POST">
 
             {% csrf_token %}
 
-            <!-- Mobile Number -->
+            <!-- Member Type -->
+            <select
+                name="member_type"
+                class="member-type"
+                required
+            >
+                <option value="">Select Member Type</option>
+                <option value="HOSPITAL">Hospital</option>
+                <option value="DOCTOR">Doctor</option>
+                <option value="HEALTH_WORKER">Health Worker</option>
+                <option value="MEDICAL_SHOP">Medical Shop</option>
+                <option value="BLOOD_BANK">Blood Bank</option>
+            </select>
+
+            <!-- Username -->
             <input
                 type="text"
-                name="mobile"
-                placeholder="Enter Mobile Number"
-                maxlength="10"
+                name="username"
+                placeholder="Username"
                 required
-                value="{{ request.POST.mobile }}"
             >
-
-            <!-- Patient Selection -->
-            {% if patients %}
-                <div class="patient-selection">
-
-                    <div class="patient-selection-title">
-                        Select Patient
-                    </div>
-
-                    {% for patient in patients %}
-
-                        <label class="patient-option">
-
-                            <input
-                                type="radio"
-                                name="patient_id"
-                                value="{{ patient.id }}"
-                                required
-                            >
-
-                            {{ patient.full_name }}
-
-                        </label>
-
-                    {% endfor %}
-
-                </div>
-            {% endif %}
 
             <!-- Password -->
             <input
@@ -176,30 +151,36 @@
                 required
             >
 
-            <button type="submit" class="login-button">
+            <button
+                type="submit"
+                class="login-button"
+            >
                 Login
             </button>
 
-            <a href="{% url 'forgot_password' %}"
-               style="display:block; margin-top:12px; color:#1a7f6e; text-decoration:none; font-weight:bold;">
-                    Forgot Password?
-            </a>
+            <a href="{% url 'members_forgot_password' %}"
+                  style="display:block; margin-top:15px; color:#2E4057; text-decoration:none; font-weight:bold;">
+                        Forgot Password?
+             </a>
 
         </form>
 
         <!-- Registration Link -->
         <div class="register-link">
 
-            Don't have an account?
+            Don't have a member account?
 
-            <a href="{% url 'patient_register' %}">
+            <a href="{% url 'members_register' %}">
                 Register
             </a>
 
         </div>
 
         <!-- Back to Home -->
-        <a href="{% url 'home' %}" class="back-link">
+        <a
+            href="{% url 'home' %}"
+            class="back-link"
+        >
             ← Back to Home
         </a>
 

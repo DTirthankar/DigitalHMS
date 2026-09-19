@@ -15,8 +15,10 @@ urlpatterns = [
     # Patient Login/Register
     path('patient/login/', views.patient_login, name='patient_login'),
     path('patient/register/', views.patient_register, name='patient_register'),
+    path('patient/forgot-password/', views.forgot_password, name='forgot_password'),
 
     # Members Login
     path('members/login/', views.members_login, name='members_login'),
+    path('members/forgot-password/', views.members_forgot_password, name='members_forgot_password'),
     path('members/register/', views.members_register, name='members_register'),
 ]
