@@ -116,7 +116,10 @@ DISEASE_IMAGES = {
     'Varicose veins': 'images/Varicose veins.jpg',
 }
 
-
+# Normalize keys — remove trailing spaces
+DISEASE_IMAGES = {
+    k.strip(): v for k, v in DISEASE_IMAGES.items()
+}
 DISEASE_SPECIALIZATION = {
     'Diabetes': 'Endocrinology',
     'Hypertension': 'Cardiology',
@@ -1464,12 +1467,12 @@ def predict(request):
         # Warning and image
 
         confidence_warning = (
-            confidence < 50.0
+            confidence < 60.0
         )
 
         image_file = DISEASE_IMAGES.get(
-            prediction,
-            'images/default.png'
+            prediction.strip(),
+            None
         )
 
         # Top 3 predictions
@@ -1530,15 +1533,16 @@ def predict(request):
                 )
             ]
 
-        xai_symptoms = [
-            {
-                'symptom':
-                    s.replace('_', ' '),
-                'score':
-                    85
-            }
-            for s in selected_symptoms
-        ]
+        importances = model.feature_importances_
+        xai_symptoms = []
+        for sym in selected_symptoms:
+            if sym in SYMPTOMS:
+                idx = SYMPTOMS.index(sym)
+                xai_symptoms.append({
+                    'symptom': sym.replace('_', ' '),
+                    'score': round(float(importances[idx]) * 100, 2)
+                })
+        xai_symptoms.sort(key=lambda x: x['score'], reverse=True)
 
         urgency = URGENCY_LEVELS.get(
             prediction,
