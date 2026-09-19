@@ -523,7 +523,17 @@ def predict(request):
                 ("GERD", round(confidence * 0.08, 1))
             ]
 
-        xai_symptoms = [{'symptom': s.replace('_', ' '), 'score': 85} for s in selected_symptoms]
+        # Real XAI using model feature importances
+        importances = model.feature_importances_
+        xai_symptoms = []
+        for sym in selected_symptoms:
+            if sym in SYMPTOMS:
+                idx = SYMPTOMS.index(sym)
+                xai_symptoms.append({
+                    'symptom': sym.replace('_', ' '),
+                    'score': round(float(importances[idx]) * 100, 2)
+                })
+        xai_symptoms.sort(key=lambda x: x['score'], reverse=True)
         urgency = URGENCY_LEVELS.get(prediction, 'Low')
 
         # 6. Fetch user location strings and pass to proximity routing
@@ -619,3 +629,65 @@ def dashboard(request):
         'critical_count': critical_count,   # NEW
         'high_count': high_count,           # NEW
     })
+def patient_login(request):
+    if request.method == 'POST':
+        from django.contrib.auth import authenticate
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'patient_login.html')
+
+
+def patient_register(request):
+    if request.method == 'POST':
+        username   = request.POST.get('username')
+        password   = request.POST.get('password')
+        full_name  = request.POST.get('full_name', '')
+        mobile     = request.POST.get('mobile', '')
+        gender     = request.POST.get('gender', 'Other')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username already taken.')
+            return render(request, 'patient_register.html')
+
+        user = User.objects.create_user(
+            username=username,
+            password=password
+        )
+
+        from .models import PatientProfile, UserProfile
+        UserProfile.objects.create(user=user, role='PATIENT')
+        PatientProfile.objects.create(
+            user=user,
+            full_name=full_name,
+            mobile=mobile,
+            gender=gender
+        )
+        login(request, user)
+        messages.success(request, 'Registration successful!')
+        return redirect('home')
+
+    return render(request, 'patient_register.html')
+
+
+def members_login(request):
+    if request.method == 'POST':
+        from django.contrib.auth import authenticate
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')
+        else:
+            messages.error(request, 'Invalid credentials.')
+    return render(request, 'members_login.html')
+
+
+def members_register(request):
+    return render(request, 'members_register.html')

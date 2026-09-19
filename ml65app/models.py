@@ -166,7 +166,7 @@ class PatientProfile(models.Model):
     )
 
     def __str__(self):
-        return self.full_names
+        return self.full_name
 
 class EmergencyRequest(models.Model):
     STATUS_CHOICES = [
