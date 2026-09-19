@@ -247,70 +247,71 @@
 
   {% include "inc/menu.html" %}
   <!-- BANNER -->
-  <div class="banner">
-    <svg width="100%" viewBox="0 0 1100 420" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-      <rect width="1100" height="420" fill="#0D1B2A"/>
-      <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-        <circle cx="20" cy="20" r="1" fill="#1A7F6E" opacity="0.18"/>
+  <!-- ==================== FIXED BANNER SECTION ==================== -->
+<div class="banner" style="position: relative; width: 100%; min-height: 420px; height: auto; background: var(--navy); overflow: hidden;">
+  
+  <!-- 1. BACKGROUND SVG: Completely isolated so it doesn't push down or cover html text -->
+  <svg width="100%" height="420" viewBox="0 0 1100 420" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;">
+    <defs>
+      <pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1.5" fill="rgba(255,255,255,0.06)" />
       </pattern>
-      <rect width="1100" height="420" fill="url(#dots)"/>
-      <circle cx="820" cy="210" r="180" fill="#1A7F6E" opacity="0.05"/>
-      <circle cx="820" cy="210" r="120" fill="#1A7F6E" opacity="0.07"/>
-      <circle class="p1" cx="820" cy="210" r="60" fill="none" stroke="#22A68F" stroke-width="1"/>
-      <circle class="p2" cx="820" cy="210" r="90" fill="none" stroke="#22A68F" stroke-width="0.5"/>
-      <circle cx="820" cy="210" r="44" fill="#1B2E42" stroke="#22A68F" stroke-width="1.5"/>
-      <rect x="812" y="196" width="16" height="28" rx="3" fill="#22A68F"/>
-      <rect x="806" y="202" width="28" height="16" rx="3" fill="#22A68F"/>
-      <line x1="820" y1="166" x2="820" y2="100" stroke="#22A68F" stroke-width="0.8" opacity="0.4" stroke-dasharray="4 3"/>
-      <line x1="776" y1="188" x2="700" y2="148" stroke="#22A68F" stroke-width="0.8" opacity="0.4" stroke-dasharray="4 3"/>
-      <line x1="776" y1="232" x2="700" y2="272" stroke="#22A68F" stroke-width="0.8" opacity="0.4" stroke-dasharray="4 3"/>
-      <line x1="864" y1="188" x2="940" y2="148" stroke="#22A68F" stroke-width="0.8" opacity="0.4" stroke-dasharray="4 3"/>
-      <line x1="864" y1="232" x2="940" y2="272" stroke="#22A68F" stroke-width="0.8" opacity="0.4" stroke-dasharray="4 3"/>
-      <line x1="820" y1="254" x2="820" y2="320" stroke="#22A68F" stroke-width="0.8" opacity="0.4" stroke-dasharray="4 3"/>
-      <g class="dot1"><circle cx="820" cy="84" r="20" fill="#1B2E42" stroke="#1A7F6E" stroke-width="1"/><text x="820" y="89" text-anchor="middle" font-size="11" fill="#22A68F" font-family="system-ui">41</text></g>
-      <g class="dot2"><circle cx="688" cy="140" r="20" fill="#1B2E42" stroke="#1A7F6E" stroke-width="1"/><text x="688" y="145" text-anchor="middle" font-size="10" fill="#22A68F" font-family="system-ui">132</text></g>
-      <g class="dot3"><circle cx="688" cy="280" r="20" fill="#1B2E42" stroke="#C49A3C" stroke-width="1"/><text x="688" y="285" text-anchor="middle" font-size="10" fill="#C49A3C" font-family="system-ui">97.8%</text></g>
-      <g class="dot4"><circle cx="952" cy="140" r="20" fill="#1B2E42" stroke="#1A7F6E" stroke-width="1"/><text x="952" y="145" text-anchor="middle" font-size="10" fill="#22A68F" font-family="system-ui">4920</text></g>
-      <g class="dot5"><circle cx="952" cy="280" r="20" fill="#1B2E42" stroke="#1A7F6E" stroke-width="1"/><text x="952" y="285" text-anchor="middle" font-size="9" fill="#22A68F" font-family="system-ui">ML</text></g>
-      <g class="dot6"><circle cx="820" cy="336" r="20" fill="#1B2E42" stroke="#1A7F6E" stroke-width="1"/><text x="820" y="341" text-anchor="middle" font-size="9" fill="#22A68F" font-family="system-ui">RF</text></g>
-      <polyline class="ecg-path" points="60,310 100,310 115,310 125,270 135,350 148,250 162,370 175,310 220,310 260,310" fill="none" stroke="#22A68F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-      <g class="bt-tag">
-        <rect x="60" y="88" width="230" height="22" rx="11" fill="#1A7F6E" opacity="0.18"/>
-        <text x="175" y="103" text-anchor="middle" font-size="11" fill="#22A68F" font-family="system-ui" font-weight="500" letter-spacing="1.5">RESEARCH PROJECT · ML IN HEALTHCARE</text>
-      </g>
-      <g class="bt-h1">
-        <text x="60" y="160" font-size="46" fill="#FFFFFF" font-family="Georgia,serif" font-weight="600" letter-spacing="-1">Chronic Disease</text>
-        <text x="60" y="215" font-size="46" fill="#22A68F" font-family="Georgia,serif" font-weight="600" font-style="italic" letter-spacing="-1">Detection</text>
-      </g>
-      <g class="bt-sub">
-        <text x="60" y="258" font-size="15" fill="rgba(255,255,255,0.58)" font-family="system-ui">Using machine learning to classify 41 diseases</text>
-        <text x="60" y="278" font-size="15" fill="rgba(255,255,255,0.58)" font-family="system-ui">from 132 symptom features with 97.8% accuracy.</text>
-      </g>
-      <g class="bt-btn">
-        <a href="{% url 'predict' %}">
-          <rect x="60" y="302" width="140" height="40" rx="5" fill="#1A7F6E"/>
-          <text x="130" y="327" text-anchor="middle" font-size="13" fill="#FFFFFF" font-family="system-ui" font-weight="500">Try Predictor</text>
-        </a>
-        <a href="{% url 'about' %}">
-          <rect x="214" y="302" width="130" height="40" rx="5" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
-          <text x="279" y="327" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.75)" font-family="system-ui">Learn More</text>
-        </a>
-        <a href="{% url 'sos' %}">
-          <rect x="358" y="302" width="155" height="40" rx="5" fill="#C62828"/>
-          <text x="435" y="327" text-anchor="middle" font-size="13" fill="#FFFFFF" font-family="system-ui" font-weight="500">🚨 SOS Emergency</text>
-       </a> 
-      </g>
-      <rect x="0" y="388" width="1100" height="32" fill="rgba(26,127,110,0.12)"/>
-      <line x1="0" y1="388" x2="1100" y2="388" stroke="#1A7F6E" stroke-width="0.5" opacity="0.4"/>
-      <text x="60"  y="409" font-size="11" fill="rgba(255,255,255,0.45)" font-family="system-ui" letter-spacing="0.5">4,920 PATIENT RECORDS</text>
-      <text x="260" y="409" font-size="11" fill="rgba(255,255,255,0.2)"  font-family="system-ui">·</text>
-      <text x="280" y="409" font-size="11" fill="rgba(255,255,255,0.45)" font-family="system-ui" letter-spacing="0.5">132 SYMPTOMS</text>
-      <text x="420" y="409" font-size="11" fill="rgba(255,255,255,0.2)"  font-family="system-ui">·</text>
-      <text x="440" y="409" font-size="11" fill="rgba(255,255,255,0.45)" font-family="system-ui" letter-spacing="0.5">41 DISEASES</text>
-      <text x="565" y="409" font-size="11" fill="rgba(255,255,255,0.2)"  font-family="system-ui">·</text>
-      <text x="585" y="409" font-size="11" fill="rgba(255,255,255,0.45)" font-family="system-ui" letter-spacing="0.5">RANDOM FOREST · 97.8% ACCURACY</text>
-    </svg>
+    </defs>
+    <!-- Background grid texture fill -->
+    <rect width="100%" height="100%" fill="url(#dots)" />
+
+    <!-- Animated Pulse Rings -->
+    <circle class="p1" cx="820" cy="210" r="60" fill="none" stroke="var(--teal)" stroke-width="1" />
+    <circle class="p2" cx="820" cy="210" r="90" fill="none" stroke="#22A68F" stroke-width="0.5" opacity="0.6" />
+
+    <!-- Connected Node Dots Vector Network Graph -->
+    <g stroke="rgba(255,255,255,0.08)" stroke-width="1">
+      <line x1="820" y1="210" x2="720" y2="120" />
+      <line x1="820" y1="210" x2="940" y2="150" />
+      <line x1="820" y1="210" x2="740" y2="310" />
+      <line x1="820" y1="210" x2="900" y2="290" />
+    </g>
+
+    <!-- Floating Graphic Nodes -->
+    <circle class="dot1" cx="720" cy="120" r="24" fill="var(--navy-mid)" stroke="rgba(255,255,255,0.1)" />
+    <circle class="dot2" cx="940" cy="150" r="32" fill="var(--navy-mid)" stroke="rgba(255,255,255,0.1)" />
+    <circle class="dot3" cx="740" cy="310" r="28" fill="var(--teal)" stroke="rgba(255,255,255,0.1)" />
+    <circle class="dot4" cx="900" cy="290" r="20" fill="var(--navy-mid)" stroke="rgba(255,255,255,0.1)" />
+  </svg>
+
+  <!-- 2. FOREGROUND CONTENT: Lifted up on top of the vector layer using z-index -->
+  <div class="container" style="position: relative; z-index: 10; max-width: 1100px; margin: 0 auto; padding: 60px 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; min-height: 420px;">
+    
+    <!-- Left Copywriter Block -->
+    <div style="display: flex; flex-direction: column; justify-content: center;">
+      <span class="section-label bt-tag" style="color: var(--teal-lt); margin-bottom: 12px; display: inline-block;">RESEARCH PROJECT • ML IN HEALTHCARE</span>
+      <h1 class="bt-h1" style="font-family: var(--font-display); font-size: clamp(32px, 4vw, 48px); color: #ffffff; font-weight: 500; line-height: 1.15; margin-bottom: 16px;">
+        Chronic Disease <br><span style="color: var(--teal-lt);">Detection</span>
+      </h1>
+      <p class="bt-sub" style="font-family: var(--font-body); font-size: 16px; color: rgba(255,255,255,0.75); line-height: 1.6; max-width: 460px; margin-bottom: 32px;">
+        Using machine learning to classify 41 diseases from 132 symptom features with 97.8% accuracy.
+      </p>
+      
+      <!-- Fixed Action Buttons Container -->
+      <div class="bt-btn" style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;">
+        <a href="#predictor" class="btn-primary" style="background: var(--teal-lt); color: #fff; padding: 12px 24px; border-radius: 4px; font-weight: 500; text-decoration: none;">Try Predictor</a>
+        <a href="#about" class="btn-outline" style="border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 12px 24px; border-radius: 4px; text-decoration: none;">Learn More</a>
+        <a href="#emergency" class="btn-primary" style="background: #D9383A; color: #fff; padding: 12px 24px; border-radius: 4px; font-weight: 500; text-decoration: none;">SOS Emergency</a>
+      </div>
+    </div>
+
+    <!-- Right Graphic Spacer Alignment Block -->
+    <div style="display: flex; justify-content: center; position: relative; min-h: 300px;">
+      <!-- Labels displaying on top of vector points dynamically -->
+      <div style="position: absolute; top: -30px; left: 60px; color: rgba(255,255,255,0.4); font-size: 12px; font-family: var(--font-body);">132 Features</div>
+      <div style="position: absolute; top: 0px; right: 20px; color: rgba(255,255,255,0.4); font-size: 12px; font-family: var(--font-body);">4,920 Cases</div>
+      <div style="position: absolute; bottom: 80px; left: 80px; color: #ffffff; font-weight: 500; font-size: 14px; font-family: var(--font-body); background: var(--navy); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--teal);">97.8% Accuracy</div>
+    </div>
+
   </div>
+</div>
+<!-- ============================================================= -->
+
 
   <!-- ABOUT SECTION -->
   <section class="about-strip">
