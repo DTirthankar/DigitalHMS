@@ -225,7 +225,49 @@
             line-height: 1.7;
             margin-top: 18px;
         }
+                /* ================= XAI ================= */
 
+        .xai-card {
+            overflow: hidden;
+        }
+
+        .xai-item {
+            margin-top: 20px;
+        }
+
+        .xai-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .xai-symptom {
+            color: var(--navy);
+            font-weight: 600;
+        }
+
+        .xai-head strong {
+            color: var(--teal);
+            font-size: 14px;
+        }
+
+        .xai-bar {
+            width: 100%;
+            height: 10px;
+            background: #E8E4DC;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .xai-fill {
+            height: 100%;
+            background: var(--teal);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
         @media (max-width: 800px) {
             .grid {
                 grid-template-columns: 1fr;
@@ -421,7 +463,53 @@
                         <p class="note">No symptoms recorded.</p>
                     {% endfor %}
                 </div>
+                <!-- ================= XAI SECTION ================= -->
 
+                <div class="card xai-card">
+
+                    <h2>🧠 Explainable AI</h2>
+
+                    <p class="note" style="margin-top:0;">
+                        The following selected symptoms had the highest relative
+                        importance in the machine-learning model for this assessment.
+                    </p>
+
+                    {% if xai_symptoms %}
+
+                        {% for item in xai_symptoms %}
+
+                            <div class="xai-item">
+
+                                <div class="xai-head">
+                                    <span class="xai-symptom">
+                                        {{ item.symptom }}
+                                    </span>
+
+                                    <strong>
+                                        {{ item.importance }}%
+                                    </strong>
+                                </div>
+
+                                <div class="xai-bar">
+                                    <div
+                                        class="xai-fill"
+                                        style="width: {{ item.importance }}%;">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <p class="note">
+                            Explainable AI information is not available for this prediction.
+                        </p>
+
+                    {% endif %}
+
+                </div>
 
                 <div class="card">
                     <h2>Healthcare Next Steps</h2>

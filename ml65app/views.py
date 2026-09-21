@@ -1701,113 +1701,114 @@ def predict(request):
 # =========================
 # Prediction Result
 # =========================
-
 def prediction_result(request, prediction_id):
-
     prediction = get_object_or_404(
         PatientPrediction,
         id=prediction_id
     )
 
-    # Convert the stored Top-3 string back into a Python list.
-    top3 = []
-
-    if prediction.top3_predictions:
-
-        try:
-
-            parsed_top3 = ast.literal_eval(
-                prediction.top3_predictions
-            )
-
-            if isinstance(
-                parsed_top3,
-                list
-            ):
-
-                top3 = parsed_top3
-
-        except (
-            ValueError,
-            SyntaxError
-        ):
-
-            top3 = []
+    # Parse Top 3 predictions
+    try:
+        top3 = ast.literal_eval(prediction.top3_predictions)
+    except (ValueError, SyntaxError, TypeError):
+        top3 = []
 
     # Disease image
-
     image_file = DISEASE_IMAGES.get(
-        prediction.predicted_disease.strip(),
-        None
+        prediction.predicted_disease.strip()
     )
 
-    # Selected symptoms
+    # =====================================================
+    # XAI - Explainable AI
+    # =====================================================
+    xai_symptoms = []
 
-    selected_symptoms = [
-        symptom
-        for symptom in [
-            prediction.symptom1,
-            prediction.symptom2,
-            prediction.symptom3,
-            prediction.symptom4,
-            prediction.symptom5
+    try:
+        # Symptoms stored in the prediction
+        selected_symptoms = [
+            s.strip()
+            for s in prediction.symptoms.split(",")
+            if s.strip()
         ]
-        if symptom
-    ]
 
+        # Random Forest feature importance
+        feature_importances = model.feature_importances_
+
+        # Get importance of only the symptoms selected by patient
+        raw_xai = []
+
+        for symptom in selected_symptoms:
+
+            if symptom in SYMPTOMS:
+                index = SYMPTOMS.index(symptom)
+
+                importance = float(
+                    feature_importances[index]
+                )
+
+                raw_xai.append({
+                    "symptom": symptom.replace("_", " ").title(),
+                    "importance": importance
+                })
+
+        # Normalize importance among selected symptoms
+        # so the XAI bars are visually meaningful
+        total_importance = sum(
+            item["importance"] for item in raw_xai
+        )
+
+        if total_importance > 0:
+            for item in raw_xai:
+                item["importance"] = round(
+                    (item["importance"] / total_importance) * 100,
+                    2
+                )
+
+        # Highest contributing symptom first
+        raw_xai.sort(
+            key=lambda x: x["importance"],
+            reverse=True
+        )
+
+        xai_symptoms = raw_xai
+
+    except Exception as e:
+        print("XAI Error:", e)
+        xai_symptoms = []
+
+    # =====================================================
     # Nearby hospitals
-
-    nearby_hospitals = []
-
-    user_lat = request.session.get(
-        'prediction_lat'
+    # =====================================================
+    latitude = request.session.get(
+        "prediction_latitude",
+        0.0
     )
 
-    user_lon = request.session.get(
-        'prediction_lon'
+    longitude = request.session.get(
+        "prediction_longitude",
+        0.0
     )
 
-    if (
-        user_lat is not None
-        and user_lon is not None
-    ):
-
-        try:
-
-            nearby_hospitals = get_nearby_hospitals(
-                prediction.predicted_disease,
-                float(user_lat),
-                float(user_lon)
-            )
-
-        except (
-            ValueError,
-            TypeError
-        ):
-
-            nearby_hospitals = []
+    nearby_hospitals = get_nearby_hospitals(
+        latitude,
+        longitude,
+        prediction.predicted_disease
+    )
 
     return render(
         request,
-        'prediction_result.html',
+        "prediction_result.html",
         {
-            'prediction':
-                prediction,
+            "prediction": prediction,
+            "top3": top3,
+            "image_file": image_file,
+            "selected_symptoms": prediction.symptoms.split(","),
+            "nearby_hospitals": nearby_hospitals,
 
-            'top3':
-                top3,
-
-            'image_file':
-                image_file,
-
-            'selected_symptoms':
-                selected_symptoms,
-
-            'nearby_hospitals':
-                nearby_hospitals,
+            # ⭐ XAI DATA
+            "xai_symptoms": xai_symptoms,
         }
-    )
-# =========================
+    )# =========================
 # History
 # =========================
 
