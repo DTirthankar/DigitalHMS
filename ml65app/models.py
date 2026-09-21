@@ -3,6 +3,13 @@ from django.utils import timezone
 
 class PatientPrediction(models.Model):
     patient_name = models.CharField(max_length=100)
+    patient = models.ForeignKey(
+        'PatientProfile',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='predictions'
+    )
     patient_age = models.IntegerField(null=True, blank=True)
     patient_gender = models.CharField(
         max_length=10,

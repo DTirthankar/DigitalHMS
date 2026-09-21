@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About — ChronicML Research Project</title>
+  <title>About — MediLinkAI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
@@ -165,7 +165,13 @@
     .tool-desc { font-size: 12px; color: var(--text-lt); }
 
       /* SIDEBAR */
-    .sidebar { position: sticky; top: 88px; }
+    .sidebar {
+  position: sticky;
+  top: 88px;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
     .sidebar-card {
       background: #fff;
       border: 1px solid var(--border); border-radius: 8px;
@@ -199,6 +205,50 @@
       transition: background 0.2s;
     }
     .sidebar-nav a:hover::before { background: var(--teal); }
+
+
+    /* HEALTHCARE SERVICES */
+    .service-list {
+      margin-top: 4px;
+    }
+
+    .service-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .service-item:last-child {
+      border-bottom: none;
+    }
+
+    .service-icon {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--teal-pale);
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .service-text {
+      font-size: 14px;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+
+    .service-text strong {
+      color: var(--navy);
+      font-weight: 500;
+    }
 
     /* LIMITATIONS */
     .limitations-list { margin-top: 4px; }
@@ -243,8 +293,8 @@
       <div class="breadcrumb">
         <a href="{% url 'home' %}">Home</a><span>›</span>About
       </div>
-      <h1>About the research project</h1>
-      <p>An overview of the project background, objectives, team, tools, and the academic context underpinning this machine learning study.</p>
+      <h1>About MediLinkAI</h1>
+      <p>An overview of MediLinkAI — an AI-powered digital healthcare platform connecting patients with healthcare services, emergency support, and medical assistance through one unified system.</p>
     </div>
   </header>
 
@@ -252,55 +302,209 @@
   <div class="page-body">
     <main>
 
-      <!-- PROJECT OVERVIEW -->
+      <!-- PLATFORM OVERVIEW -->
       <section class="content-section" id="overview">
         <div class="section-label">Overview</div>
-        <h2 class="section-title">Project background</h2>
+        <h2 class="section-title">Smart Healthcare, Connected for Everyone</h2>
+
         <div class="prose">
           <p>
-            Chronic and infectious diseases collectively account for a substantial portion of global morbidity and mortality. Early and accurate diagnosis remains a clinical and logistical challenge, particularly in settings with limited access to specialist care or diagnostic infrastructure. This project investigates the application of supervised machine learning classifiers to automate symptom-based disease identification.
+            MediLinkAI is an AI-powered digital healthcare platform designed
+            to make healthcare services more accessible, connected, and easier
+            to reach. It brings multiple healthcare facilities and support
+            services together through one unified platform.
           </p>
+
           <p>
-            Using a structured dataset of 4,920 patient records spanning 41 disease categories and 132 binary symptom features, the study evaluates the comparative performance of five widely-used classifiers: Random Forest, Decision Tree, Naïve Bayes, K-Nearest Neighbours, and Support Vector Machine. The goal is to determine which approach offers the most reliable and generalisable detection performance under consistent experimental conditions.
+            The platform combines AI-powered disease triage and urgency
+            assessment with nearby hospital and doctor discovery, specialist
+            referral, emergency SOS support, diagnostic and laboratory
+            services, medicine availability, blood bank information, and
+            other healthcare support services.
           </p>
+
           <p>
-            This work is intended as a foundational study demonstrating the feasibility of symptom-driven disease classification as a preliminary screening tool. It does not constitute a clinical decision-support system and is presented in an academic context only.
+  
+                MediLinkAI is designed to help patients find the right healthcare
+                support based on their needs. When a patient is unable to travel
+                during an emergency, the platform can support emergency doctor
+                visit coordination and ambulance assistance where available.
+                Patients can order medicines through MediLinkAI from nearby
+                participating medical shops where the required medicine is available.
+                Similar to a food-delivery marketplace, the platform connects the
+                patient with the available medical shop and arranges delivery to the
+                patient's location, with an intended delivery time of up to 1 hour
+                depending on medicine availability, shop location, and delivery
+                availability.
+
+          </p>
+
+          <p>
+            The AI triage component provides preliminary disease predictions
+            and urgency assessment from patient-provided symptoms. The
+            machine learning component uses a Random Forest model trained on
+            a structured dataset of 4,920 patient records covering 41 disease
+            categories and 132 symptom features.
+          </p>
+
+          <p>
+            MediLinkAI is intended as a healthcare support and connectivity
+            platform and does not replace professional medical diagnosis,
+            treatment, or emergency medical services.
           </p>
         </div>
       </section>
 
-      <!-- OBJECTIVES -->
+      <section class="content-section" id="services">
+        <div class="section-label">Healthcare Services</div>
+        <h2 class="section-title">One Platform, Multiple Healthcare Services</h2>
+
+        <div class="service-list">
+
+          <div class="service-item">
+            <div class="service-icon">AI</div>
+            <div class="service-text">
+              <strong>AI Disease Triage</strong><br>
+              Preliminary disease prediction and urgency assessment based on
+              patient-provided symptoms.
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-icon">H</div>
+            <div class="service-text">
+              <strong>Hospital &amp; Doctor Discovery</strong><br>
+              Find nearby hospitals and doctors and identify suitable
+              healthcare resources based on patient needs.
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-icon">SR</div>
+            <div class="service-text">
+              <strong>Specialist Referral</strong><br>
+              Help patients identify and reach relevant specialists for
+              appropriate healthcare support.
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-icon">SOS</div>
+            <div class="service-text">
+              <strong>Emergency SOS &amp; Ambulance Support</strong><br>
+              Emergency assistance can help connect patients with nearby
+              healthcare resources and ambulance support when required.
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-icon">DR</div>
+            <div class="service-text">
+              <strong>Doctor Home / Emergency Visit</strong><br>
+              When a patient cannot travel to a hospital or clinic during an
+              emergency, the platform can support doctor-visit coordination
+              where available.
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-icon">1H</div>
+            <div class="service-text">
+              <strong>Medicine Delivery</strong><br>
+              Connect patients with participating medical shops for medicine
+              ordering and intended delivery within 1 hour where the service
+              is available.
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-icon">LAB</div>
+            <div class="service-text">
+              <strong>Diagnostics &amp; Laboratory Services</strong><br>
+              Discover nearby diagnostic services and laboratory testing
+              options for healthcare needs.
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-icon">B</div>
+            <div class="service-text">
+              <strong>Blood Bank Support</strong><br>
+              Help users find relevant blood-bank resources when blood-related
+              assistance is required.
+            </div>
+          </div>
+
+          <div class="service-item">
+            <div class="service-icon">BED</div>
+            <div class="service-text">
+              <strong>Hospital Beds &amp; Doctor Availability</strong><br>
+              Provide hospital information such as bed availability and
+              doctor-on-duty details where updated data is available.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PLATFORM GOALS -->
       <section class="content-section" id="objectives">
-        <div class="section-label">Aims</div>
-        <h2 class="section-title">Research objectives</h2>
+        <div class="section-label">Our Goals</div>
+        <h2 class="section-title">What MediLinkAI Aims to Provide</h2>
+
         <div class="objectives-list">
+
           <div class="obj-item">
             <div class="obj-num">01</div>
-            <div class="obj-text">To preprocess and encode a real-world symptom-disease dataset for use in multi-class supervised classification tasks.</div>
+            <div class="obj-text">
+              Connect patients with hospitals, doctors, specialists,
+              diagnostics, medicines, blood banks, and emergency healthcare
+              services through one platform.
+            </div>
           </div>
+
           <div class="obj-item">
             <div class="obj-num">02</div>
-            <div class="obj-text">To train and evaluate five standard machine learning classifiers across identical experimental conditions, ensuring reproducibility of results.</div>
+            <div class="obj-text">
+              Provide AI-assisted symptom triage and urgency assessment as
+              preliminary healthcare-navigation support.
+            </div>
           </div>
+
           <div class="obj-item">
             <div class="obj-num">03</div>
-            <div class="obj-text">To identify the most accurate classifier for this domain through accuracy, precision, recall, F1-score, and confusion matrix analysis.</div>
+            <div class="obj-text">
+              Help patients access emergency support, including doctor-visit
+              coordination and ambulance assistance when required and
+              available.
+            </div>
           </div>
+
           <div class="obj-item">
             <div class="obj-num">04</div>
-            <div class="obj-text">To analyse feature importance to determine which symptoms carry the greatest discriminative value across disease classes.</div>
+            <div class="obj-text">
+              Make essential healthcare services easier to reach through
+              hospital discovery, diagnostics, medicine ordering, blood-bank
+              information, and specialist referral.
+            </div>
           </div>
+
           <div class="obj-item">
             <div class="obj-num">05</div>
-            <div class="obj-text">To provide a transparent methodology suitable for extension, peer review, and replication in related healthcare ML research.</div>
+            <div class="obj-text">
+              Build a connected digital healthcare ecosystem that can bring
+              patients, hospitals, doctors, health workers, medical shops,
+              diagnostic services, and blood banks together.
+            </div>
           </div>
+
         </div>
       </section>
 
-      <!-- TOOLS & TECHNOLOGIES -->
+      <!-- AI & TECHNOLOGY -->
       <section class="content-section" id="tools">
         <div class="section-label">Technical stack</div>
-        <h2 class="section-title">Tools &amp; technologies</h2>
+        <h2 class="section-title">AI &amp; Technologies</h2>
         <div class="tools-grid">
           <div class="tool-item">
             <div class="tool-name">Python 3.10</div>
@@ -332,7 +536,7 @@
       <!-- LIMITATIONS -->
       <section class="content-section" id="limitations">
         <div class="section-label">Scope</div>
-        <h2 class="section-title">Limitations &amp; future work</h2>
+        <h2 class="section-title">Limitations &amp; Future Development</h2>
         <div class="prose" style="margin-bottom:20px">
           <p>This study is subject to several limitations that should be considered when interpreting results or extending this work to applied settings.</p>
         </div>
@@ -359,34 +563,153 @@
 
     <!-- SIDEBAR -->
     <aside class="sidebar">
+
+      <!-- PROJECT SNAPSHOT -->
       <div class="sidebar-card">
-        <div class="sidebar-card-title">Project snapshot</div>
-        <div class="sidebar-row"><span class="sidebar-key">Type</span><span class="sidebar-val">Academic research</span></div>
-        <div class="sidebar-row"><span class="sidebar-key">Domain</span><span class="sidebar-val">Healthcare ML</span></div>
-        <div class="sidebar-row"><span class="sidebar-key">Dataset</span><span class="sidebar-val">4,920 records</span></div>
-        <div class="sidebar-row"><span class="sidebar-key">Classes</span><span class="sidebar-val">41 diseases</span></div>
-        <div class="sidebar-row"><span class="sidebar-key">Features</span><span class="sidebar-val">132 symptoms</span></div>
-        <div class="sidebar-row"><span class="sidebar-key">Best model</span><span class="sidebar-val">Random Forest</span></div>
-        <div class="sidebar-row"><span class="sidebar-key">Best accuracy</span><span class="sidebar-val">97.8%</span></div>
+
+        <div class="sidebar-card-title">
+          Project Snapshot
+        </div>
+
+        <div class="sidebar-row">
+          <span class="sidebar-key">Platform</span>
+          <span class="sidebar-val" style="color:var(--teal);">
+            MediLinkAI
+          </span>
+        </div>
+
+        <div class="sidebar-row">
+          <span class="sidebar-key">Type</span>
+          <span class="sidebar-val">
+            Digital Healthcare
+          </span>
+        </div>
+
+        <div class="sidebar-row">
+          <span class="sidebar-key">AI Model</span>
+          <span class="sidebar-val" style="color:var(--teal);">
+            Random Forest
+          </span>
+        </div>
+
+        <div class="sidebar-row">
+          <span class="sidebar-key">Dataset</span>
+          <span class="sidebar-val">
+            4,920 records
+          </span>
+        </div>
+
+        <div class="sidebar-row">
+          <span class="sidebar-key">Disease Classes</span>
+          <span class="sidebar-val">
+            41 diseases
+          </span>
+        </div>
+
+        <div class="sidebar-row">
+          <span class="sidebar-key">Symptoms</span>
+          <span class="sidebar-val">
+            132 features
+          </span>
+        </div>
+
+        <div class="sidebar-row">
+          <span class="sidebar-key">Core Focus</span>
+          <span class="sidebar-val" style="color:var(--teal);">
+            Connected Healthcare
+          </span>
+        </div>
+
       </div>
 
+
+      <!-- ON THIS PAGE -->
       <div class="sidebar-card">
-        <div class="sidebar-card-title">On this page</div>
+
+        <div class="sidebar-card-title">
+          On This Page
+        </div>
+
         <ul class="sidebar-nav">
-          <li><a href="#overview">Project background</a></li>
-          <li><a href="#objectives">Research objectives</a></li>
-          <li><a href="#tools">Tools &amp; technologies</a></li>
-          <li><a href="#limitations">Limitations &amp; future work</a></li>
+
+          <li>
+            <a href="#overview">Platform Overview</a>
+          </li>
+
+          <li>
+            <a href="#services">Healthcare Services</a>
+          </li>
+
+          <li>
+            <a href="#objectives">Platform Goals</a>
+          </li>
+
+          <li>
+            <a href="#tools">AI &amp; Technologies</a>
+          </li>
+
+          <li>
+            <a href="#ai">Machine Learning</a>
+          </li>
+
+          <li>
+            <a href="#limitations">Limitations &amp; Future Development</a>
+          </li>
+
         </ul>
+
       </div>
 
-      <div class="sidebar-card" style="background:var(--navy);border-color:var(--navy)">
-        <div class="sidebar-card-title" style="color:rgba(255,255,255,0.4)">Explore further</div>
-        <p style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:16px">View classifier benchmarks, feature importance rankings, and confusion matrices.</p>
-        <a href="{% url 'home' %}#results" style="display:block;text-align:center;background:var(--teal);color:#fff;font-size:13px;font-weight:500;padding:10px;border-radius:4px;text-decoration:none;transition:background 0.2s" onmouseover="this.style.background='#22A68F'" onmouseout="this.style.background='#1A7F6E'">View results →</a>
+
+      <!-- EXPLORE MEDILINKAI -->
+      <div
+        class="sidebar-card"
+        style="background:var(--navy);border-color:var(--navy)"
+      >
+
+        <div
+          class="sidebar-card-title"
+          style="color:rgba(255,255,255,0.55)"
+        >
+          Explore MediLinkAI
+        </div>
+
+        <p
+          style="
+            font-size:13px;
+            color:rgba(255,255,255,0.65);
+            line-height:1.7;
+            margin-bottom:16px;
+          "
+        >
+          Explore AI triage, emergency SOS, hospitals, doctors,
+          diagnostics, medicines, blood banks, ambulance support,
+          and specialist referral services.
+        </p>
+
+        <a
+          href="{% url 'home' %}"
+          style="
+            display:block;
+            text-align:center;
+            background:var(--teal);
+            color:#fff;
+            font-size:13px;
+            font-weight:500;
+            padding:10px;
+            border-radius:4px;
+            text-decoration:none;
+            transition:background 0.2s;
+          "
+          onmouseover="this.style.background='#22A68F'"
+          onmouseout="this.style.background='#1A7F6E'"
+        >
+          Explore Platform →
+        </a>
+
       </div>
+
     </aside>
-  </div>
 
   {% include "inc/footer.html" %}
 

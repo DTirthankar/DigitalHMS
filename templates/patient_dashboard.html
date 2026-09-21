@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediLinkAI - Patient Dashboard</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f7f5f1;
+    color: #102a43;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+    color: inherit;
+}
+
+/* =========================
+   Main Dashboard Container
+========================= */
+
+.dashboard-wrap {
+    width: min(1390px, calc(100% - 32px));
+    margin: 28px auto 50px;
+}
+
+/* =========================
+   Welcome Section
+========================= */
+
+.welcome {
+    background: linear-gradient(135deg, #102a43, #173f55);
+    color: #fff;
+    border-radius: 16px;
+    padding: 28px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+.welcome-label {
+    color: #55d6c0;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.welcome h1 {
+    margin: 0 0 5px;
+    font-size: 30px;
+}
+
+.welcome p {
+    margin: 0;
+    color: #c9d9e3;
+    font-size: 15px;
+}
+
+.patient-mini {
+    min-width: 240px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 12px;
+    padding: 14px 17px;
+}
+
+.patient-mini strong {
+    display: block;
+    font-size: 17px;
+    margin-bottom: 8px;
+}
+
+.patient-mini div {
+    color: #c9d9e3;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* =========================
+   Stats
+========================= */
+
+.stats-grid {
+    width: min(1390px, calc(100% - 32px));
+    margin: 0 auto 20px;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #e1e5e7;
+    border-radius: 12px;
+    padding: 17px 19px;
+}
+
+.stat-label {
+    color: #61758a;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.stat-value {
+    font-size: 27px;
+    font-weight: 700;
+    color: #071d33;
+    margin: 5px 0;
+}
+
+.stat-sub {
+    color: #61758a;
+    font-size: 13px;
+}
+
+/* =========================
+   Main Grid
+========================= */
+
+.main-grid {
+    width: min(1390px, calc(100% - 32px));
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(300px, .95fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* =========================
+   Sections
+========================= */
+
+.section,
+.profile-card {
+    background: #fff;
+    border: 1px solid #e1e5e7;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.section-heading h2 {
+    margin: 0;
+    font-size: 21px;
+    color: #102a43;
+}
+
+.section-link {
+    color: #138572;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: underline;
+    white-space: nowrap;
+}
+
+/* =========================
+   Healthcare Services
+========================= */
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.service-card {
+    min-height: 150px;
+    border: 1px solid #dfe5e8;
+    border-radius: 11px;
+    padding: 13px;
+    background: #fff;
+    text-decoration: none;
+    transition: .18s ease;
+}
+
+.service-card:hover {
+    border-color: #168b78;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(16,42,67,.07);
+}
+
+.service-icon {
+    width: 37px;
+    height: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f5f1;
+    border-radius: 10px;
+    font-size: 19px;
+    margin-bottom: 9px;
+}
+
+.service-card h3 {
+    margin: 0 0 6px;
+    font-size: 15px;
+    text-decoration: underline;
+}
+
+.service-card p {
+    margin: 0;
+    color: #486581;
+    font-size: 12.5px;
+    line-height: 1.45;
+}
+
+.consultation-service {
+    grid-column: span 2;
+    min-height: 190px;
+}
+
+.specialty-list {
+    color: #486581;
+    font-size: 12px;
+    line-height: 1.55;
+    margin: 7px 0 10px;
+}
+
+/* =========================
+   Buttons
+========================= */
+
+.small-button,
+.record-button,
+.result-button {
+    display: block;
+    background: #168b78;
+    color: #fff;
+    border-radius: 7px;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+/* =========================
+   Assessments
+========================= */
+
+.empty-state {
+    color: #61758a;
+    font-size: 13px;
+    margin: 0;
+}
+
+.assessment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.assessment-row {
+    border: 1px solid #e3e7e9;
+    border-radius: 9px;
+    padding: 11px 13px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.assessment-row strong {
+    font-size: 14px;
+}
+
+.assessment-row small {
+    display: block;
+    color: #718096;
+    margin-top: 4px;
+}
+
+.assessment-meta {
+    text-align: right;
+    font-size: 12px;
+}
+
+/* =========================
+   Medical Records
+========================= */
+
+.records-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.record-card {
+    border: 1px solid #dfe5e8;
+    border-radius: 11px;
+    padding: 15px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.record-top {
+    display: flex;
+    gap: 11px;
+    align-items: flex-start;
+}
+
+.record-icon {
+    width: 37px;
+    height: 37px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e7f5f1;
+    border-radius: 10px;
+    font-size: 19px;
+}
+
+.record-card h3 {
+    margin: 0 0 6px;
+    font-size: 16px;
+}
+
+.record-card p {
+    margin: 0;
+    color: #486581;
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+
+.record-button {
+    margin-top: 13px;
+    font-size: 13px;
+}
+
+/* =========================
+   Emergency
+========================= */
+
+.emergency-card {
+    background: #d92727;
+    color: #fff;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.emergency-card h2 {
+    margin: 0 0 7px;
+    font-size: 20px;
+}
+
+.emergency-card p {
+    margin: 0 0 15px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.emergency-button {
+    display: inline-block;
+    background: #fff;
+    color: #c62828;
+    padding: 9px 13px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+/* =========================
+   Profile
+========================= */
+
+.profile-title {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.profile-title h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.profile-percent {
+    color: #168b78;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid #edf0f1;
+    padding: 9px 0;
+    font-size: 13px;
+}
+
+.profile-row span {
+    color: #61758a;
+}
+
+.profile-row strong {
+    text-align: right;
+    color: #102a43;
+}
+
+/* =========================
+   Latest Result
+========================= */
+
+.result-box {
+    border: 1px solid #dfe5e8;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.result-box .disease {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.result-meta {
+    color: #61758a;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.result-button {
+    margin-top: 13px;
+    font-size: 13px;
+}
+
+/* =========================
+   Safety
+========================= */
+
+.safety {
+    background: #f3f8fb;
+    border: 1px solid #dbe8ef;
+    border-radius: 10px;
+    padding: 13px;
+    color: #486581;
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+
+/* =========================
+   Emergency SOS History Button
+========================= */
+
+.sos-history-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    background: #fff1f1;
+    color: #c62828;
+
+    border: 1px solid #f0b5b5;
+    border-radius: 8px;
+
+    padding: 8px 13px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+}
+
+.sos-history-button:hover {
+    background: #c62828;
+    color: white;
+    border-color: #c62828;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(198, 40, 40, 0.18);
+}
+
+/* =========================
+   Logout Button
+========================= */
+
+.logout-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 7px 14px;
+    background: #fff1f1;
+    color: #c62828;
+    border: 1px solid #f0b5b5;
+    border-radius: 7px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.logout-button:hover {
+    background: #c62828;
+    color: white;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media(max-width:1150px) {
+
+    .service-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .consultation-service {
+        grid-column: span 2;
+    }
+}
+
+@media(max-width:900px) {
+
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .service-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width:600px) {
+
+    .dashboard-wrap {
+        width: calc(100% - 18px);
+        margin-top: 15px;
+    }
+
+    .stats-grid,
+    .main-grid {
+        width: calc(100% - 18px);
+    }
+
+    .welcome {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .patient-mini {
+        width: 100%;
+    }
+
+    .stats-grid,
+    .service-grid,
+    .records-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .consultation-service {
+        grid-column: span 1;
+    }
+}
+</style>
+</head>
+<body>
+{% include "inc/menu.html" %}
+<div class="dashboard-wrap">
+
+<section class="welcome">
+<div>
+<div class="welcome-label">MediLinkAI • Patient Dashboard</div>
+<h1>Welcome, {{ patient.full_name|default:"Patient" }} 👋</h1>
+<p>Your healthcare, connected in one place.</p>
+</div>
+<div class="patient-mini">
+    <strong>{{ patient.full_name|default:"Patient" }}</strong>
+    <div>📱 {{ patient.mobile|default:"Not provided" }}</div>
+    <div>Patient ID: #{{ patient.id }}</div>
+
+    <a class="logout-button" href="{% url 'logout' %}">
+        🚪 Logout
+    </a>
+</div>
+</div>
+</section>
+
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-label">AI Assessments</div><div class="stat-value">{{ total_assessments|default:0 }}</div><div class="stat-sub">Total assessments</div></div>
+<div class="stat-card"><div class="stat-label">Latest Assessment</div><div class="stat-value">{% if latest_prediction %}{{ latest_prediction.predicted_disease }}{% else %}—{% endif %}</div><div class="stat-sub">{% if latest_prediction %}{{ latest_prediction.confidence }}% confidence{% else %}No result yet{% endif %}</div></div>
+<div class="stat-card"><div class="stat-label">SOS Requests</div><div class="stat-value">{{ emergency_count|default:0 }}</div><div class="stat-sub">Emergency history</div></div>
+<div class="stat-card"><div class="stat-label">Profile</div><div class="stat-value">{{ profile_completion|default:0 }}%</div><div class="stat-sub">Profile completion</div></div>
+</div>
+
+<div class="main-grid">
+
+<div class="left-column">
+
+<section class="section" id="services">
+<div class="section-heading"><h2>Healthcare Services</h2><a href="{% url 'home' %}" class="section-link">Explore Platform →</a></div>
+<div class="service-grid">
+
+<a href="{% url 'predict' %}" class="service-card"><div class="service-icon">🤖</div><h3>AI Health Assessment</h3><p>Symptoms, disease prediction &amp; urgency.</p></a>
+
+<a href="{% url 'home' %}" class="service-card"><div class="service-icon">🏥</div><h3>Hospitals &amp; Doctors</h3><p>Find nearby healthcare providers.</p></a>
+
+<div class="service-card consultation-service"
+     id="consultation">
+
+    <div class="service-icon">
+        👨‍⚕️
+    </div>
+
+    <h3>
+        Online Doctor Consultation &amp; Appointments
+    </h3>
+
+    <p>
+        Search doctors by specialty, check available slots
+        and book online consultations.
+    </p>
+
+    <div class="specialty-list">
+        General Physician • Cardiologist • Neurologist
+        • Dermatologist • Orthopedic • Gynecologist
+        • Pediatrician • ENT • Dentist • Ophthalmologist
+    </div>
+
+    <a href="#consultation"
+       class="small-button">
+        Choose Doctor &amp; Book Appointment
+    </a>
+
+</div>
+<!--a href="{% url 'sos' %}" class="service-card"><div class="service-icon">🚨</div><h3>Emergency SOS</h3><p>Emergency support &amp; ambulance request.</p></a-->
+
+<a href="#medicine" class="service-card"><div class="service-icon">💊</div><h3>Medicines &amp; Delivery</h3><p>Order from available nearby medical shops.</p></a>
+
+<a href="#diagnostics" class="service-card"><div class="service-icon">🧪</div><h3>Diagnostics &amp; Labs</h3><p>Find diagnostic and laboratory services.</p></a>
+
+<a href="#blood" class="service-card"><div class="service-icon">🩸</div><h3>Blood Banks</h3><p>Find blood-bank information and support.</p></a>
+
+<a href="#specialist" class="service-card"><div class="service-icon">🩺</div><h3>Specialist Referral</h3><p>Find relevant specialist care.</p></a>
+
+</div>
+</section>
+
+<!--section class="section">
+<div class="section-heading"><h2>📋 My Recent AI Assessments</h2><a href="{% url 'predict' %}" class="section-link">New Assessment →</a></div>
+{% if recent_predictions %}
+<div class="assessment-list">
+{% for item in recent_predictions %}
+<div class="assessment-row">
+<div><strong>{{ item.predicted_disease }}</strong><small>{{ item.created_at|date:"d M Y, h:i A" }}</small></div>
+<div class="assessment-meta">{{ item.confidence }}%<br>{{ item.urgency }}</div>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<p class="empty-state">No AI assessments yet.</p>
+{% endif %}
+</section-->
+
+<section class="section">
+<div class="section-heading"><h2>📋 My Healthcare Records</h2></div>
+<div class="records-grid">
+
+<div class="record-card" id="prescriptions">
+<div class="record-top"><div class="record-icon">💊</div><div><h3>Prescriptions</h3><p>View previous prescriptions, doctor details, medicines, dosage and prescription history.</p></div></div>
+<a href="#prescriptions" class="record-button">View Prescriptions</a>
+</div>
+
+<!--div class="record-card" id="appointments">
+<div class="record-top"><div class="record-icon">📅</div><div><h3>Appointments</h3><p>Manage online consultation appointments, available slots and upcoming doctor visits.</p></div></div>
+<a href="#consultation" class="record-button">Find a Doctor</a>
+</div-->
+<div class="record-card" id="medical-reports">
+
+    <div class="record-top">
+
+        <div class="record-icon">
+            📋
+        </div>
+
+        <div>
+
+            <h3>
+                Medical Reports
+            </h3>
+
+            <p>
+                View your laboratory reports, diagnostic reports,
+                test results and previous medical records.
+            </p>
+
+        </div>
+
+    </div>
+
+    <a href="#medical-reports"
+       class="record-button">
+        View Medical Reports
+    </a>
+
+</div>
+
+
+</div>
+</section>
+
+<section class="section">
+<div class="section-heading"><h2>🚨 Emergency Support History</h2><a href="{% url 'sos' %}" class="sos-history-button">
+    🚨 New Emergency SOS
+</a></div>
+{% if emergency_requests %}
+<div class="assessment-list">
+{% for item in emergency_requests %}
+<div class="assessment-row"><div><strong>Emergency Request</strong><small>{{ item.created_at|date:"d M Y, h:i A" }}</small></div><div class="assessment-meta">{{ item.status }}</div></div>
+{% endfor %}
+</div>
+{% else %}
+<p class="empty-state">No emergency requests recorded.</p>
+{% endif %}
+</section>
+
+</div>
+
+<div class="right-column">
+
+<section class="emergency-card">
+<h2>🚨 Emergency Support</h2>
+<p>If you cannot travel during an emergency, request SOS support for nearby healthcare assistance and ambulance coordination.</p>
+<a href="{% url 'sos' %}" class="emergency-button">Activate Emergency SOS</a>
+</section>
+
+<section class="profile-card">
+<div class="profile-title"><h2>👤 My Health Profile</h2><div class="profile-percent">{{ profile_completion|default:0 }}%</div></div>
+<div class="profile-row"><span>Name</span><strong>{{ patient.full_name|default:"Not provided" }}</strong></div>
+<div class="profile-row"><span>Gender</span><strong>{{ patient.gender|default:"Not provided" }}</strong></div>
+<div class="profile-row"><span>Blood Group</span><strong>{{ patient.blood_group|default:"Not provided" }}</strong></div>
+<div class="profile-row"><span>Mobile</span><strong>{{ patient.mobile|default:"Not provided" }}</strong></div>
+<div class="profile-row"><span>Emergency Contact</span><strong>{{ patient.emergency_contact_number|default:"Not provided" }}</strong></div>
+<div class="profile-row"><span>Allergies</span><strong>{{ patient.allergies|default:"Not provided" }}</strong></div>
+</section>
+
+<section class="section">
+<div class="section-heading"><h2>🔬 Latest AI Result</h2></div>
+{% if latest_prediction %}
+<div class="result-box">
+<div class="disease">{{ latest_prediction.predicted_disease }}</div>
+<div class="result-meta">Confidence: {{ latest_prediction.confidence }}%<br>Urgency: {{ latest_prediction.urgency }}<br>{{ latest_prediction.created_at|date:"d M Y, h:i A" }}</div>
+<a href="{% url 'prediction_result' latest_prediction.id %}" class="result-button">View Full Result</a>
+</div>
+{% else %}
+<p class="empty-state">No AI assessment available yet.</p>
+<a href="{% url 'predict' %}" class="result-button">Start Assessment</a>
+{% endif %}
+</section>
+
+<section class="section" id="medicine">
+<div class="section-heading"><h2>💊 Medicine Ordering</h2></div>
+<div class="safety">Order medicines from participating nearby medical shops where the required medicine is available. Delivery can be arranged to the patient's location, with intended one-hour delivery where available.</div>
+</section>
+
+<section class="section">
+<div class="section-heading"><h2>⚠️ Healthcare Safety</h2></div>
+<div class="safety">MediLinkAI provides AI-assisted preliminary health assessment and healthcare navigation. It does not replace professional medical diagnosis or treatment. In a serious emergency, seek immediate professional medical assistance.</div>
+</section>
+
+</div>
+</div>
+</div>
+</body>
+</html>

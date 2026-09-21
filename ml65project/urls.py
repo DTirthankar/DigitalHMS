@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from ml65app import views
+from django.contrib.auth import logout
 
 urlpatterns = [
     path('admin/', admin.site.urls),   # Django admin panel
@@ -8,14 +9,18 @@ urlpatterns = [
     path('sos/', views.sos, name='sos'),
     path('about/', views.about, name='about'),
     path('predict/', views.predict, name='predict'),
+    path('prediction-result/<int:prediction_id>/',views.prediction_result,name='prediction_result'),
+    path('patient/dashboard/',views.patient_dashboard,name='patient_dashboard'),
     path('contact/', views.contact, name='contact'),
     path('history/', views.history, name='history'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('patient/logout/', views.patient_logout, name='logout'),
 
     # Patient Login/Register
     path('patient/login/', views.patient_login, name='patient_login'),
     path('patient/register/', views.patient_register, name='patient_register'),
     path('patient/forgot-password/', views.forgot_password, name='forgot_password'),
+    
 
     # Members Login
     path('members/login/', views.members_login, name='members_login'),

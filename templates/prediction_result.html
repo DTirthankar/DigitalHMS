@@ -1,0 +1,456 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result — MediLinkAI</title>
+
+    <style>
+        :root {
+            --navy: #0D1B2A;
+            --teal: #1A7F6E;
+            --teal-lt: #22A68F;
+            --teal-pale: #E6F4F1;
+            --off-white: #F7F5F0;
+            --text: #1A1A1A;
+            --text-mid: #4A5568;
+            --border: rgba(0,0,0,0.08);
+            --red: #C62828;
+            --gold: #C49A3C;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--off-white);
+            color: var(--text);
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 45px 24px 70px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--teal);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+
+        .hero {
+            background: var(--navy);
+            color: white;
+            border-radius: 14px;
+            padding: 32px;
+            margin-bottom: 22px;
+        }
+
+        .hero-label {
+            color: #7ED8C5;
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .hero p {
+            margin: 0;
+            color: rgba(255,255,255,0.68);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 26px;
+            margin-bottom: 22px;
+        }
+
+        .card h2 {
+            margin: 0 0 18px;
+            color: var(--navy);
+            font-size: 21px;
+        }
+
+        .prediction {
+            color: var(--teal);
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .confidence {
+            font-size: 18px;
+            color: var(--text-mid);
+            margin-bottom: 22px;
+        }
+
+        .urgency {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 20px;
+            background: var(--teal-pale);
+            color: var(--teal);
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .top3-item {
+            margin-bottom: 15px;
+        }
+
+        .top3-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .bar {
+            height: 8px;
+            background: #E8E4DC;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar span {
+            display: block;
+            height: 100%;
+            background: var(--teal);
+            border-radius: 10px;
+        }
+
+        .patient-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 11px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .patient-row:last-child {
+            border-bottom: none;
+        }
+
+        .patient-key {
+            color: var(--text-mid);
+        }
+
+        .patient-val {
+            font-weight: 600;
+            color: var(--navy);
+            text-align: right;
+        }
+
+        .hospital {
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .hospital:last-child {
+            margin-bottom: 0;
+        }
+
+        .hospital-name {
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .hospital-info {
+            color: var(--text-mid);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 11px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--teal);
+            color: white;
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--border);
+            color: var(--navy);
+            background: white;
+        }
+
+        .btn-sos {
+            background: var(--red);
+            color: white;
+        }
+
+        .note {
+            color: var(--text-mid);
+            font-size: 13px;
+            line-height: 1.7;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 800px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 24px;
+            }
+
+            .prediction {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% include "inc/menu.html" %}
+
+    <div class="page">
+
+        <a class="back-link" href="{% url 'patient_dashboard' %}">
+    ← Back to Patient Dashboard
+</a>
+
+        <section class="hero">
+            <div class="hero-label">MediLinkAI • AI Health Assessment</div>
+            <h1>Prediction Result</h1>
+            <p>Preliminary AI-assisted health assessment and healthcare guidance.</p>
+        </section>
+
+        <div class="grid">
+
+            <main>
+
+                <div class="card">
+                    <h2>Primary Prediction</h2>
+
+                    <div class="prediction">
+                        {{ prediction.predicted_disease }}
+                    </div>
+
+                    <div class="confidence">
+                        {{ prediction.confidence }}% confidence
+                    </div>
+
+                    <div class="urgency">
+                        Urgency: {{ prediction.urgency }}
+                    </div>
+
+                    {% if image_file %}
+                        <img
+                            src="{% static image_file %}"
+                            alt="{{ prediction.predicted_disease }}"
+                            style="max-width:100%;max-height:280px;border-radius:8px;display:block;margin-top:5px;"
+                        >
+                    {% endif %}
+
+                    <div class="actions">
+                        <a class="btn btn-primary" href="{% url 'predict' %}">
+                            New Assessment
+                        </a>
+
+                        <a class="btn btn-sos" href="{% url 'sos' %}">
+                            🚨 Emergency SOS
+                        </a>
+                    </div>
+
+                    <p class="note">
+                        This result is a preliminary screening output and is
+                        not a definitive medical diagnosis. For urgent or
+                        serious symptoms, seek professional medical care.
+                    </p>
+                </div>
+
+
+                <div class="card">
+                    <h2>Top 3 Possible Conditions</h2>
+
+                    {% for disease, score in top3 %}
+                        <div class="top3-item">
+
+                            <div class="top3-head">
+                                <span>{{ disease }}</span>
+                                <strong>{{ score }}%</strong>
+                            </div>
+
+                            <div class="bar">
+                                <span style="width:{{ score }}%;"></span>
+                            </div>
+
+                        </div>
+                    {% empty %}
+                        <p class="note">No prediction details available.</p>
+                    {% endfor %}
+                </div>
+
+
+                <div class="card">
+                    <h2>Nearby Healthcare Support</h2>
+
+                    {% for item in nearby_hospitals %}
+
+                        <div class="hospital">
+
+                            <div class="hospital-name">
+                                {{ item.hospital.name }}
+                            </div>
+
+                            <div class="hospital-info">
+                                📍 {{ item.hospital.address }}<br>
+                                📞 {{ item.hospital.phone }}<br>
+                                🚗 Approx. {{ item.distance }} km away
+
+                                {% if item.hospital.available_beds %}
+                                    <br>🛏 Available beds:
+                                    {{ item.hospital.available_beds }}
+                                {% endif %}
+
+                                {% if item.hospital.doctor_available %}
+                                    <br>👨‍⚕️ Doctor on duty:
+                                    {{ item.hospital.doctor_name }}
+                                {% endif %}
+                            </div>
+
+                        </div>
+
+                    {% empty %}
+
+                        <p class="note">
+                            Nearby hospital information is not available
+                            for this assessment.
+                        </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </main>
+
+
+            <aside>
+
+                <div class="card">
+                    <h2>Patient Information</h2>
+
+                    <div class="patient-row">
+                        <span class="patient-key">Name</span>
+                        <span class="patient-val">
+                            {{ prediction.patient_name }}
+                        </span>
+                    </div>
+
+                    <div class="patient-row">
+                        <span class="patient-key">Age</span>
+                        <span class="patient-val">
+                            {% if prediction.patient_age %}
+                                {{ prediction.patient_age }}
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <div class="patient-row">
+                        <span class="patient-key">Gender</span>
+                        <span class="patient-val">
+                            {{ prediction.patient_gender }}
+                        </span>
+                    </div>
+
+                    <div class="patient-row">
+                        <span class="patient-key">Assessment ID</span>
+                        <span class="patient-val">
+                            #{{ prediction.id }}
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <h2>Selected Symptoms</h2>
+
+                    {% for symptom in selected_symptoms %}
+                        <div class="patient-row">
+                            <span class="patient-key">Symptom {{ forloop.counter }}</span>
+                            <span class="patient-val">
+                                {{ symptom|cut:"_" }}
+                            </span>
+                        </div>
+                    {% empty %}
+                        <p class="note">No symptoms recorded.</p>
+                    {% endfor %}
+                </div>
+
+
+                <div class="card">
+                    <h2>Healthcare Next Steps</h2>
+
+                    <p class="note" style="margin-top:0;">
+                        Based on the assessment, MediLinkAI can help users
+                        explore nearby hospitals, doctors, specialist
+                        referral, diagnostics, medicines, blood banks,
+                        and emergency support.
+                    </p>
+
+                    <div class="actions">
+                        <a class="btn btn-primary" href="{% url 'home' %}">
+                            Explore Healthcare
+                        </a>
+
+                        <a class="btn btn-secondary" href="{% url 'about' %}">
+                            Learn About MediLinkAI
+                        </a>
+                    </div>
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+    {% include "inc/footer.html" %}
+
+</body>
+</html>

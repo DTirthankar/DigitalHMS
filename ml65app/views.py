@@ -1,12 +1,13 @@
 import joblib
 import numpy as np
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import os
+import ast
 from django.conf import settings
 from django.db.models import Q
 
 from django.contrib.auth.models import User
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib import messages
 
 from .models import (
@@ -365,7 +366,7 @@ def patient_login(request):
                 user
             )
 
-            return redirect('home')
+            return redirect('patient_dashboard')
 
         messages.error(
             request,
@@ -381,8 +382,18 @@ def patient_login(request):
         'patient_login.html',
         {
             'patients': patients
-        }
-    )
+        })
+
+
+    # =========================
+# Patient Logout
+# =========================
+
+def patient_logout(request):
+    logout(request)
+    return redirect('patient_login')
+
+
 
 
 # =========================
@@ -1534,15 +1545,32 @@ def predict(request):
             ]
 
         importances = model.feature_importances_
+
         xai_symptoms = []
+
         for sym in selected_symptoms:
+
             if sym in SYMPTOMS:
+
                 idx = SYMPTOMS.index(sym)
+
                 xai_symptoms.append({
-                    'symptom': sym.replace('_', ' '),
-                    'score': round(float(importances[idx]) * 100, 2)
+                    'symptom':
+                        sym.replace('_', ' '),
+
+                    'score':
+                        round(
+                            float(
+                                importances[idx]
+                            ) * 100,
+                            2
+                        )
                 })
-        xai_symptoms.sort(key=lambda x: x['score'], reverse=True)
+
+        xai_symptoms.sort(
+            key=lambda x: x['score'],
+            reverse=True
+        )
 
         urgency = URGENCY_LEVELS.get(
             prediction,
@@ -1563,14 +1591,18 @@ def predict(request):
 
         try:
 
+            user_lat_float = float(
+                user_lat or 0.0
+            )
+
+            user_lon_float = float(
+                user_lon or 0.0
+            )
+
             nearby_hospitals = get_nearby_hospitals(
                 prediction,
-                float(
-                    user_lat or 0.0
-                ),
-                float(
-                    user_lon or 0.0
-                )
+                user_lat_float,
+                user_lon_float
             )
 
         except (
@@ -1578,17 +1610,36 @@ def predict(request):
             TypeError
         ):
 
+            user_lat_float = 0.0
+            user_lon_float = 0.0
+
             nearby_hospitals = []
+
+        # Link prediction to the logged-in patient.
+        # Guest predictions remain unlinked (patient=None).
+        patient_profile = None
+
+        if request.user.is_authenticated:
+            try:
+                patient_profile = PatientProfile.objects.get(
+                    user=request.user
+                )
+            except PatientProfile.DoesNotExist:
+                patient_profile = None
 
         # Save prediction
 
-        PatientPrediction.objects.create(
+        prediction_record = PatientPrediction.objects.create(
+            patient=patient_profile,
+
             patient_name=patient_name,
+
             patient_age=(
                 int(patient_age)
                 if patient_age
                 else None
             ),
+
             patient_gender=patient_gender,
 
             symptom1=(
@@ -1628,24 +1679,14 @@ def predict(request):
             created_at=timezone.now()
         )
 
-        return render(
-            request,
-            'predict.html',
-            {
-                'result': prediction,
-                'image_file': image_file,
-                'confidence': confidence,
-                'confidence_warning':
-                    confidence_warning,
-                'top3': top3,
-                'xai_symptoms':
-                    xai_symptoms,
-                'symptoms': SYMPTOMS,
-                'patient_name':
-                    patient_name,
-                'nearby_hospitals':
-                    nearby_hospitals,
-            }
+        # Store location temporarily for the result page
+        request.session['prediction_lat'] = user_lat_float
+        request.session['prediction_lon'] = user_lon_float
+
+        # Open the result on a separate page
+        return redirect(
+            'prediction_result',
+            prediction_id=prediction_record.id
         )
 
     return render(
@@ -1657,6 +1698,115 @@ def predict(request):
     )
 
 
+# =========================
+# Prediction Result
+# =========================
+
+def prediction_result(request, prediction_id):
+
+    prediction = get_object_or_404(
+        PatientPrediction,
+        id=prediction_id
+    )
+
+    # Convert the stored Top-3 string back into a Python list.
+    top3 = []
+
+    if prediction.top3_predictions:
+
+        try:
+
+            parsed_top3 = ast.literal_eval(
+                prediction.top3_predictions
+            )
+
+            if isinstance(
+                parsed_top3,
+                list
+            ):
+
+                top3 = parsed_top3
+
+        except (
+            ValueError,
+            SyntaxError
+        ):
+
+            top3 = []
+
+    # Disease image
+
+    image_file = DISEASE_IMAGES.get(
+        prediction.predicted_disease.strip(),
+        None
+    )
+
+    # Selected symptoms
+
+    selected_symptoms = [
+        symptom
+        for symptom in [
+            prediction.symptom1,
+            prediction.symptom2,
+            prediction.symptom3,
+            prediction.symptom4,
+            prediction.symptom5
+        ]
+        if symptom
+    ]
+
+    # Nearby hospitals
+
+    nearby_hospitals = []
+
+    user_lat = request.session.get(
+        'prediction_lat'
+    )
+
+    user_lon = request.session.get(
+        'prediction_lon'
+    )
+
+    if (
+        user_lat is not None
+        and user_lon is not None
+    ):
+
+        try:
+
+            nearby_hospitals = get_nearby_hospitals(
+                prediction.predicted_disease,
+                float(user_lat),
+                float(user_lon)
+            )
+
+        except (
+            ValueError,
+            TypeError
+        ):
+
+            nearby_hospitals = []
+
+    return render(
+        request,
+        'prediction_result.html',
+        {
+            'prediction':
+                prediction,
+
+            'top3':
+                top3,
+
+            'image_file':
+                image_file,
+
+            'selected_symptoms':
+                selected_symptoms,
+
+            'nearby_hospitals':
+                nearby_hospitals,
+        }
+    )
 # =========================
 # History
 # =========================
@@ -1776,5 +1926,117 @@ def dashboard(request):
                 critical_count,
             'high_count':
                 high_count,
+        }
+    )
+
+# =========================
+# Patient Dashboard
+# =========================
+
+def patient_dashboard(request):
+
+    if not request.user.is_authenticated:
+        return redirect('patient_login')
+
+    try:
+        patient = PatientProfile.objects.get(
+            user=request.user
+        )
+
+    except PatientProfile.DoesNotExist:
+
+        messages.error(
+            request,
+            'Patient profile not found.'
+        )
+
+        return redirect('home')
+
+    # =========================
+    # AI Assessments
+    # =========================
+
+    patient_predictions = (
+        PatientPrediction.objects
+        .filter(
+            patient=patient
+        )
+        .order_by('-created_at')
+    )
+
+    recent_predictions = patient_predictions[:5]
+
+    total_assessments = patient_predictions.count()
+
+    latest_prediction = (
+        recent_predictions[0]
+        if recent_predictions
+        else None
+    )
+
+    # =========================
+    # Emergency / SOS History
+    # =========================
+
+    emergency_requests = (
+        EmergencyRequest.objects
+        .filter(
+            patient_name__iexact=patient.full_name
+        )
+        .select_related('hospital')
+        .order_by('-created_at')[:5]
+    )
+
+    emergency_count = (
+        EmergencyRequest.objects
+        .filter(
+            patient_name__iexact=patient.full_name
+        )
+        .count()
+    )
+
+    # =========================
+    # Profile Completion
+    # =========================
+
+    profile_fields = [
+        patient.full_name,
+        patient.date_of_birth,
+        patient.gender,
+        patient.blood_group,
+        patient.mobile,
+        patient.email,
+        patient.address,
+        patient.emergency_contact_name,
+        patient.emergency_contact_number,
+        patient.medical_history,
+        patient.allergies,
+        patient.current_medications,
+        patient.insurance_company,
+        patient.policy_number,
+        patient.payment_preference,
+    ]
+
+    completed = sum(
+        1
+        for value in profile_fields
+        if value not in [None, '', False]
+    )
+
+    profile_completion = round(
+        (completed / len(profile_fields)) * 100
+    )
+
+    return render(
+        request,
+        'patient_dashboard.html',
+        {
+            'patient': patient,
+            'recent_predictions': recent_predictions,
+            'latest_prediction': latest_prediction,
+            'total_assessments': total_assessments,
+            'emergency_requests': emergency_requests,
+            'emergency_count': emergency_count,
+            'profile_completion': profile_completion,
         }
     )
